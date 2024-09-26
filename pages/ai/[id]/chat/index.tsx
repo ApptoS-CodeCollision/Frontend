@@ -145,8 +145,8 @@ const AIChat = () => {
         )}
         <div ref={messagesEndRef} />
       </div>
-      <div className="fixed bottom-16 left-0 right-0 bg-[#1F222A]">
-        <div className="max-w-[600px] mx-auto px-3 py-3">
+      <div className="fixed bottom-16 left-0 right-0 bg-[#1F222A] max-w-[600px] mx-auto">
+        <div className=" mx-auto px-3 py-3">
           <div className="flex items-center space-x-2">
             <div className="flex-grow bg-[#373A43] rounded-lg px-5 py-4">
               <input
