@@ -12,6 +12,8 @@ export default function SearchPage() {
   const [sortBy, setSortBy] = useState<"latest" | "popular">("latest");
   const [showSortOptions, setShowSortOptions] = useState(false);
 
+  console.log(searchCards);
+
   const loadAIModels = useCallback(async () => {
     setIsLoading(true);
     try {

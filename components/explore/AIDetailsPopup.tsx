@@ -39,7 +39,7 @@ const AIDetailsPopup: React.FC<AIDetailsPropWithName> = ({
             Average # of Tokens:
             <span className="text-white font-bold ml-1">
               {Math.round(
-                ai_detail.total_token_usage / (ai_detail.chat_count || 1),
+                ai_detail.total_token_usage / (ai_detail.chat_count || 1)
               )}
             </span>
           </p>
@@ -97,7 +97,9 @@ const AIDetailsPopup: React.FC<AIDetailsPropWithName> = ({
             {ai_detail.examples ? (
               <p className="text-gray-300 text-sm">{ai_detail.examples}</p>
             ) : (
-              <p className="text-gray-400 text-sm italic">Link in Bio. SN.</p>
+              <p className="text-gray-400 text-sm italic">
+                No Example Provided
+              </p>
             )}
           </div>
         </div>
