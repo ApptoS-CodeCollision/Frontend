@@ -31,6 +31,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
   const [name, setName] = useState("");
   const [introductions, setIntroductions] = useState("");
   const [data, setData] = useState("");
+  const [examples, setExamples] = useState("");
   const [loading, setLoading] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [nameError, setNameError] = useState("");
@@ -52,7 +53,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
       name !== "" &&
         selectedCategory !== "" &&
         introductions !== "" &&
-        data !== "",
+        data !== ""
     );
   }, [name, selectedCategory, introductions, data]);
 
@@ -69,7 +70,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
       rag_comments: "CreateAI",
       profile_image_url: "",
       created_at: new Date().toISOString(),
-      examples: "",
+      examples: examples,
     };
 
     try {
@@ -214,6 +215,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
                     type="text"
                     placeholder="Provide an example to initiate the conversation"
                     className="w-full bg-transparent focus:outline-none focus:border-primary-900"
+                    onChange={(e) => setExamples(e.target.value)}
                   />
                 </div>
               </div>

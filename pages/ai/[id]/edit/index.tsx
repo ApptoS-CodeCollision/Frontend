@@ -26,6 +26,7 @@ const EditAIPage = () => {
     rag_contents: "",
     profile_image_url: "",
     examples: "",
+    created_at: "",
   });
   const [loading, setLoading] = useState(true);
   const [updateLoading, setUpdateLoading] = useState(false);
@@ -37,6 +38,7 @@ const EditAIPage = () => {
         try {
           setLoading(true);
           const fetchedAIData = await fetchAIDetails(id);
+          console.log(fetchedAIData);
           setAIData({
             name: fetchedAIData.name,
             category: fetchedAIData.category as CategoryKey,
@@ -44,6 +46,7 @@ const EditAIPage = () => {
             rag_contents: fetchedAIData.rag_contents,
             profile_image_url: fetchedAIData.profile_image_url,
             examples: fetchedAIData.examples,
+            created_at: new Date().toISOString(),
           });
         } catch (error) {
           console.error("Error fetching AI data:", error);
@@ -72,6 +75,8 @@ const EditAIPage = () => {
   const handleCategoryChange = (category: CategoryKey) => {
     setAIData((prevData) => ({ ...prevData, category }));
   };
+
+  console.log(aiData);
 
   const handleUpdate = async () => {
     setUpdateLoading(true);
