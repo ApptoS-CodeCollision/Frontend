@@ -65,6 +65,7 @@ const EditAISheet: React.FC<EditAISheetProps> = ({ ai, onUpdate }) => {
       rag_contents: data,
       rag_comments: "Updated AI",
       examples: "",
+      created_at: "",
     };
 
     console.log(data);
