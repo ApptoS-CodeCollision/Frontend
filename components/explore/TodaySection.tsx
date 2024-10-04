@@ -46,7 +46,7 @@ const TodaySection: React.FC<TodaySectionProps> = ({
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 1,
+    slidesToShow: 1.5,
     slidesToScroll: 1,
     arrows: showArrows,
   };

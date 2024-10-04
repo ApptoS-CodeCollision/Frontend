@@ -11,6 +11,18 @@ export type CategoryKey =
   | "graphics & design"
   | "others";
 
+export const categories: string[] = [
+  "All",
+  "Education",
+  "Health & Fitness",
+  "Entertainment",
+  "Social networking",
+  "Business",
+  "Developer tools",
+  "Graphics & Design",
+  "Others",
+];
+
 interface CategorySelectorProps {
   categories: string[];
   selectedCategory: CategoryKey;
@@ -78,7 +90,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
       const maxScroll = container.scrollWidth - container.clientWidth;
       container.scrollLeft = Math.max(
         0,
-        Math.min(scrollPercentage * maxScroll, maxScroll),
+        Math.min(scrollPercentage * maxScroll, maxScroll)
       );
     }
   };

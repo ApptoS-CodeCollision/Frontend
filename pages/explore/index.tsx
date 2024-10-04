@@ -3,31 +3,21 @@ import { fetchTodayAIs, fetchTrendingAIs } from "@/utils/api/ai";
 import { CardData } from "@/utils/interface";
 import CategorySelector, {
   CategoryKey,
+  categories,
 } from "@/components/explore/CategorySelector";
 import TodaySection from "@/components/explore/TodaySection";
 import RecentSection from "@/components/explore/RecentSection";
 import { useUserStore } from "@/store/userStore";
-
-const categories: string[] = [
-  "All",
-  "Education",
-  "Health & Fitness",
-  "Entertainment",
-  "Social networking",
-  "Business",
-  "Developer tools",
-  "Graphics & Design",
-  "Others",
-];
 
 export default function ExplorePage() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("all");
   const [selectedAI, setSelectedAI] = useState<CardData | null>(null);
   const [todayCards, setTodayCards] = useState<CardData[] | null>(null);
   const [trendCards, setTrendCards] = useState<CardData[] | null>(null);
-  console.log(trendCards);
+
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useUserStore();
+
   useEffect(() => {
     const loadAIModels = async () => {
       if (user && user.user_address) {
@@ -37,7 +27,6 @@ export default function ExplorePage() {
           setIsLoading(false);
         } catch (error) {
           console.error(error);
-          setIsLoading(false);
         }
       }
     };
