@@ -5,6 +5,7 @@ import { AIDetailProps } from "@/utils/interface";
 import { useUserStore } from "@/store/userStore";
 import { Plus, PlusCircle } from "lucide-react";
 import avatarImage from "@/assets/avatar.png";
+import { charge, fetchTrial } from "@/utils/api/user";
 
 interface AIBalanceCardProps {
   name: string;
@@ -64,6 +65,7 @@ const AIBalanceCard: React.FC<AIBalanceCardProps> = ({
 const MyBalancePage = () => {
   const [myAIs, setMyAIs] = useState<AIDetailProps[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [remainTrial, setRemainTrial] = useState(0);
   const { user } = useUserStore();
 
   useEffect(() => {
@@ -72,6 +74,8 @@ const MyBalancePage = () => {
         try {
           const todayData = await fetchMyAIs(user.user_address);
           setMyAIs(todayData.ais);
+          const remain = await fetchTrial(user.user_address);
+          setRemainTrial(remain);
           setIsLoading(false);
         } catch (error) {
           console.error(error);
@@ -94,9 +98,26 @@ const MyBalancePage = () => {
     );
   }
 
+  const handleChargeClick = async () => {
+    console.log("Charge CLick");
+
+    try {
+      if (user && user.user_address) {
+        console.log("Start");
+        const userData = {
+          user_address: user.user_address,
+        };
+        const result = await charge(userData);
+        window.alert("Charge Complete");
+      }
+    } catch (e) {
+      window.alert("Charge Failed");
+    }
+  };
+
   const totalEarnings =
-    myAIs?.reduce((sum, ai) => sum + ai.total_token_usage * 0.01, 0) || 0;
-  const totalBalance = 437000; // This should be fetched from an API or calculated
+    myAIs?.reduce((sum, ai) => sum + ai.total_token_usage * 0.0017, 0) || 0;
+  const totalBalance = 0; // This should be fetched from an API or calculated
 
   return (
     <div className="">
@@ -116,9 +137,16 @@ const MyBalancePage = () => {
             </p>
           </div>
         </div>
-        <button className="w-full bg-primary-900 text-white py-1 rounded-full font-semibold flex items-center justify-center">
-          <Plus className="mr-2" /> Charge
-        </button>
+        {remainTrial ? (
+          <div>Free Trial {remainTrial} Left</div>
+        ) : (
+          <button
+            className="w-full bg-primary-900 text-white py-1 rounded-full font-semibold flex items-center justify-center"
+            onClick={handleChargeClick}
+          >
+            <Plus className="mr-2" /> Charge
+          </button>
+        )}
       </div>
 
       <h2 className="text-white text-xl font-semibold mb-4">
@@ -131,7 +159,7 @@ const MyBalancePage = () => {
           category={ai.category}
           imageSrc={ai.profile_img_url}
           usage={ai.total_token_usage}
-          earnings={ai.total_token_usage * 0.01}
+          earnings={ai.total_token_usage * 0.0017}
         />
       ))}
     </div>

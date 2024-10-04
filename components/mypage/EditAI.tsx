@@ -65,6 +65,7 @@ const EditAISheet: React.FC<EditAISheetProps> = ({ ai, onUpdate }) => {
       rag_contents: data,
       rag_comments: "Updated AI",
       examples: "",
+      created_at: "",
     };
 
     console.log(data);
@@ -95,14 +96,14 @@ const EditAISheet: React.FC<EditAISheetProps> = ({ ai, onUpdate }) => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className="px-4 py-2 bg-primary-50 text-primary-900 rounded-full hover:bg-primary-700 transition-colors flex items-center">
+        <button className="w-full py-4 bg-primary-900 text-white hover:bg-primary-700 rounded-full flex items-center justify-center">
           <Pencil className="mr-2" size={18} />
           Edit AI
         </button>
       </SheetTrigger>
       <SheetContent side="bottom" className="h-[calc(100vh-4rem)] p-0">
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center justify-between p-4">
             <h2 className="text-xl font-semibold flex-grow text-center">
               Edit AI
             </h2>
@@ -137,7 +138,7 @@ const EditAISheet: React.FC<EditAISheetProps> = ({ ai, onUpdate }) => {
             <div>
               <label
                 htmlFor="nickname"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium mb-1"
               >
                 AI Name
               </label>

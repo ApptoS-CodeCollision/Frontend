@@ -26,6 +26,7 @@ const EditAIPage = () => {
     rag_contents: "",
     profile_image_url: "",
     examples: "",
+    created_at: "",
   });
   const [loading, setLoading] = useState(true);
   const [updateLoading, setUpdateLoading] = useState(false);
@@ -37,6 +38,7 @@ const EditAIPage = () => {
         try {
           setLoading(true);
           const fetchedAIData = await fetchAIDetails(id);
+          console.log(fetchedAIData);
           setAIData({
             name: fetchedAIData.name,
             category: fetchedAIData.category as CategoryKey,
@@ -44,6 +46,7 @@ const EditAIPage = () => {
             rag_contents: fetchedAIData.rag_contents,
             profile_image_url: fetchedAIData.profile_image_url,
             examples: fetchedAIData.examples,
+            created_at: new Date().toISOString(),
           });
         } catch (error) {
           console.error("Error fetching AI data:", error);
@@ -72,6 +75,8 @@ const EditAIPage = () => {
   const handleCategoryChange = (category: CategoryKey) => {
     setAIData((prevData) => ({ ...prevData, category }));
   };
+
+  console.log(aiData);
 
   const handleUpdate = async () => {
     setUpdateLoading(true);
@@ -155,17 +160,14 @@ const EditAIPage = () => {
           </div>
 
           <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="name" className="block text-sm font-medium mb-1">
               AI Name
             </label>
             <p className="font-bold">{aiData.name}</p>
           </div>
 
           <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-700">Category</p>
+            <p className="text-sm font-medium">Category</p>
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => {
                 const categoryKey = category
@@ -176,10 +178,10 @@ const EditAIPage = () => {
                   <button
                     key={category}
                     onClick={() => handleCategoryChange(categoryKey)}
-                    className={`px-4 py-2 rounded-full ${
+                    className={`px-4 text-primary-900 bg-primary-900 border-primary-900 border bg-opacity-10 rounded-full flex-shrink-0 transition-colors duration-200 ease-in-out ${
                       aiData.category === categoryKey
-                        ? "bg-primary-900 text-white"
-                        : "bg-white text-primary-900 border border-primary-900"
+                        ? "border border-primary-900"
+                        : "border-opacity-10"
                     }`}
                   >
                     {category}
@@ -190,39 +192,43 @@ const EditAIPage = () => {
           </div>
 
           <div className="space-y-4">
-            <div className="bg-white rounded-lg border py-2 px-4">
-              <h3 className="font-semibold mb-2 pb-2 border-b">Introduction</h3>
+            <div className="rounded-lg border border-gray-700 py-2 px-3 bg-[#1F222A]">
+              <h3 className="mb-2 pb-1 border-b border-gray-700">
+                Describe your AI
+              </h3>
               <textarea
                 name="introductions"
                 value={aiData.introductions}
                 placeholder="Add a short description"
-                className="w-full text-gray-600 bg-transparent resize-none focus:outline-none"
+                className="w-full bg-transparent resize-none focus:outline-none"
                 rows={2}
                 onChange={handleInputChange}
               />
             </div>
 
-            <div className="bg-white rounded-lg border py-2 px-4">
-              <h3 className="font-semibold mb-2">Data</h3>
+            <div className="rounded-lg border border-gray-700 py-2 px-3 bg-[#1F222A]">
+              <h3 className="mb-2 pb-1 border-b border-gray-700">Data</h3>
               <div className="space-y-2">
                 <textarea
                   name="rag_contents"
                   value={aiData.rag_contents}
                   placeholder="Provide things to learn"
-                  className="w-full text-gray-600 bg-transparent border-b border-gray-200 focus:outline-none focus:border-primary-900"
+                  className="w-full bg-transparent resize-none focus:outline-none"
                   rows={3}
                   onChange={handleInputChange}
                 />
               </div>
             </div>
-            <div className="bg-white rounded-lg border py-2 px-4">
-              <h3 className="font-semibold mb-2 pb-2 border-b">Examples</h3>
+            <div className="rounded-lg border border-gray-700 py-2 px-3 bg-[#1F222A]">
+              <h3 className="mb-2 pb-1 border-b border-gray-700 pb-2 border-b">
+                Examples
+              </h3>
               <textarea
                 name="examples"
                 value={aiData.examples}
                 placeholder="Provide a short example of this AI."
-                className="w-full text-gray-600 bg-transparent resize-none focus:outline-none"
-                rows={2}
+                className="w-full bg-transparent resize-none focus:outline-none"
+                rows={1}
                 onChange={handleInputChange}
               />
             </div>
@@ -230,9 +236,9 @@ const EditAIPage = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-16 left-0 right-0 p-4 bg-white border-t max-w-[600px] mx-auto">
+      <div className="fixed bottom-16 left-0 right-0 p-4 bg-black max-w-[600px] mx-auto">
         <button
-          className="w-full py-4 bg-primary-50 text-primary-900 hover:bg-primary-700 rounded-full flex items-center justify-center"
+          className="w-full py-4 rounded-full flex items-center justify-center bg-primary-900 text-white hover:bg-primary-700"
           onClick={handleUpdate}
           disabled={updateLoading}
         >
