@@ -29,6 +29,9 @@ interface CategorySelectorProps {
   setSelectedCategory: (category: CategoryKey) => void;
 }
 
+const MIN_SCROLLBAR_WIDTH = 10; // 최소 스크롤바 너비 (10%)
+const WIDE_SCREEN_BREAKPOINT = 450; // 와이드 스크린 기준 너비
+
 const CategorySelector: React.FC<CategorySelectorProps> = ({
   categories,
   selectedCategory,
@@ -38,32 +41,43 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
   const scrollbarRef = useRef<HTMLDivElement>(null);
   const [showScrollbar, setShowScrollbar] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [scrollbarWidth, setScrollbarWidth] = useState(20);
+  const [scrollbarWidth, setScrollbarWidth] = useState(MIN_SCROLLBAR_WIDTH);
   const [isDragging, setIsDragging] = useState(false);
   const [isWideScreen, setIsWideScreen] = useState(false);
 
-  useEffect(() => {
-    const checkScreenWidth = () => {
-      setIsWideScreen(window.innerWidth > 450);
-    };
+  // 화면 너비 체크 후 상태 업데이트
+  const updateIsWideScreen = () => {
+    setIsWideScreen(window.innerWidth > WIDE_SCREEN_BREAKPOINT);
+  };
 
-    checkScreenWidth();
-    window.addEventListener("resize", checkScreenWidth);
+  // 스크롤 가능한지 체크
+  const checkOverflow = (container: HTMLDivElement) => {
+    return container.scrollWidth > container.clientWidth;
+  };
+
+  // 스크롤바 너비 업데이트
+  const updateScrollbarWidth = (container: HTMLDivElement) => {
+    const newScrollbarWidth =
+      (container.clientWidth / container.scrollWidth) * 100;
+    setScrollbarWidth(Math.max(newScrollbarWidth, MIN_SCROLLBAR_WIDTH)); // 최소 10% 너비
+  };
+
+  useEffect(() => {
+    updateIsWideScreen();
+    window.addEventListener("resize", updateIsWideScreen);
 
     return () => {
-      window.removeEventListener("resize", checkScreenWidth);
+      window.removeEventListener("resize", updateIsWideScreen);
     };
   }, []);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (container) {
-      const hasOverflow = container.scrollWidth > container.clientWidth;
+      const hasOverflow = checkOverflow(container);
       setShowScrollbar(hasOverflow && isWideScreen);
       if (hasOverflow) {
-        const newScrollbarWidth =
-          (container.clientWidth / container.scrollWidth) * 100;
-        setScrollbarWidth(Math.max(newScrollbarWidth, 10)); // Minimum 10% width
+        updateScrollbarWidth(container);
       }
     }
   }, [categories, isWideScreen]);
@@ -100,7 +114,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
     handleScrollbarInteraction(e.clientX);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = (e: MouseEvent) => {
     if (isDragging) {
       handleScrollbarInteraction(e.clientX);
     }
@@ -112,10 +126,11 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 
   useEffect(() => {
     document.addEventListener("mouseup", handleMouseUp);
-    document.addEventListener("mousemove", handleMouseMove as any);
+    document.addEventListener("mousemove", handleMouseMove);
+
     return () => {
       document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("mousemove", handleMouseMove as any);
+      document.removeEventListener("mousemove", handleMouseMove);
     };
   }, [isDragging]);
 
@@ -146,6 +161,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
           );
         })}
       </div>
+
       {showScrollbar && (
         <div
           ref={scrollbarRef}

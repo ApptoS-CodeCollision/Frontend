@@ -2,6 +2,37 @@ import { AICardProps } from "../interface";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+// 공통 fetch 요청 처리 함수
+async function apiRequest(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(
+      `Error: ${response.status} ${response.statusText}\n${errorText}`
+    );
+    throw new Error(`Network response was not ok: ${response.statusText}`);
+  }
+  return await response.json();
+}
+
+// API 경로 상수화
+const USER_API = {
+  ADD: "/users/",
+  EXISTS: (user_address: string) => `/users/exists/${user_address}`,
+  FETCH: (user_address: string) => `/users/${user_address}`,
+  CHAT_LIST: (user_address: string) => `/chats/${user_address}`,
+  MY_AIS: (user_address: string) => `/ais/user/${user_address}`,
+  LIKE_LIST: (user_address: string) => `/ais/likes/${user_address}`,
+  ADD_LIKE: "/likes/",
+  TRIAL: (user_address: string) =>
+    `/contracts/free_trial_count/?user_address=${user_address}`,
+  CHARGE: (user_address: string) => `/users/charge/${user_address}`,
+};
+
+// 사용자 추가
 export async function addUser(userData: {
   user_address: string;
   nickname: string;
@@ -10,74 +41,42 @@ export async function addUser(userData: {
   country?: string;
   interest?: string;
 }) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_address: userData.user_address,
-        nickname: userData.nickname,
-        profile_image_url: userData.profile_image_url || "",
-        gender: userData.gender || "",
-        country: userData.country || "",
-        interest: userData.interest || "",
-        trial: 10,
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to add user");
-  }
-
-  return await response.json();
+  return await apiRequest(USER_API.ADD, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_address: userData.user_address,
+      nickname: userData.nickname,
+      profile_image_url: userData.profile_image_url || "",
+      gender: userData.gender || "",
+      country: userData.country || "",
+      interest: userData.interest || "",
+      trial: 10,
+    }),
+  });
 }
 
+// 사용자 존재 여부 확인
 export async function fetchUserExists(user_address: string) {
-  const response = await fetch(`${API_BASE_URL}/users/exists/${user_address}`);
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return await response.json();
+  return await apiRequest(USER_API.EXISTS(user_address));
 }
 
+// 사용자 정보 가져오기
 export async function fetchUser(user_address: string) {
-  const response = await fetch(`${API_BASE_URL}/users/${user_address}`);
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return await response.json();
+  return await apiRequest(USER_API.FETCH(user_address));
 }
 
+// 채팅 리스트 가져오기
 export async function fetchChatList(user_address: string) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/chats/${user_address}`
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("Error response body:", errorText);
-    throw new Error(
-      `Failed to fetch chat list: ${response.status} ${response.statusText}`
-    );
-  }
-
-  const data = await response.json();
-  return data;
+  return await apiRequest(USER_API.CHAT_LIST(user_address));
 }
 
-export async function fetchMyAIs(user_address: string): Promise<AICardProps[]> {
-  const response = await fetch(`${API_BASE_URL}/ais/user/${user_address}`);
-  console.log("response", response);
-  if (!response.ok) {
-    throw new Error("Failed to fetch user's AIs");
-  }
-  return await response.json();
+// 사용자가 만든 AI 리스트 가져오기
+export async function fetchMyAIs(user_address: string) {
+  return await apiRequest(USER_API.MY_AIS(user_address));
 }
 
+// 사용자 업데이트
 export async function updateUser(userData: {
   user_address: string;
   profile_image_url?: string;
@@ -86,135 +85,64 @@ export async function updateUser(userData: {
   interest?: string;
   trial?: number;
 }) {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_address: userData.user_address,
-          profile_image_url: userData.profile_image_url || "",
-          gender: userData.gender || "",
-          country: userData.country || "",
-          interest: userData.interest || "",
-          trial: userData.trial || 0,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error updating user:", error);
-    throw error;
-  }
+  return await apiRequest(USER_API.ADD, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_address: userData.user_address,
+      profile_image_url: userData.profile_image_url || "",
+      gender: userData.gender || "",
+      country: userData.country || "",
+      interest: userData.interest || "",
+      trial: userData.trial || 0,
+    }),
+  });
 }
 
+// 좋아요 리스트 가져오기
 export async function fetchLikeList(user_address: string) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/ais/likes/${user_address}`
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("Error response body:", errorText);
-    throw new Error(
-      `Failed to fetch chat list: ${response.status} ${response.statusText}`
-    );
-  }
-
-  const data = await response.json();
-  return data;
+  return await apiRequest(USER_API.LIKE_LIST(user_address));
 }
 
+// 좋아요 추가
 export async function addLike(userData: {
   user_address: string;
   ai_id: string;
 }) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/likes/`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_address: userData.user_address,
-        ai_id: userData.ai_id,
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to like AI");
-  }
-
-  return await response.json();
+  return await apiRequest(USER_API.ADD_LIKE, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_address: userData.user_address,
+      ai_id: userData.ai_id,
+    }),
+  });
 }
 
+// 좋아요 제거
 export async function delLike(userData: {
   user_address: string;
   ai_id: string;
 }) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/likes/`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_address: userData.user_address,
-        ai_id: userData.ai_id,
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to like AI");
-  }
-
-  return await response.json();
+  return await apiRequest(USER_API.ADD_LIKE, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_address: userData.user_address,
+      ai_id: userData.ai_id,
+    }),
+  });
 }
 
+// 트라이얼 정보 가져오기
 export async function fetchTrial(user_address: string) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/contracts/free_trial_count/?user_address=${user_address}`
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("Error response body:", errorText);
-    throw new Error(
-      `Failed to fetch chat list: ${response.status} ${response.statusText}`
-    );
-  }
-
-  const data = await response.json();
-  return data;
+  return await apiRequest(USER_API.TRIAL(user_address));
 }
 
+// 유저 충전
 export async function charge(userData: { user_address: string }) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/charge/${userData.user_address}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to like AI");
-  }
-
-  return await response.json();
+  return await apiRequest(USER_API.CHARGE(userData.user_address), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
 }

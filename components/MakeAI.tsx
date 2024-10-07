@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetClose,
-} from "@/components/ui/sheet";
-import { Plus, Camera } from "lucide-react";
-import { createAI } from "@/utils/api/ai";
+// components/CreateCustomAISheet.tsx
+import { useState, useEffect } from "react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Plus } from "lucide-react";
+import AIFormField from "@/components/AIFormField";
+import { useAIModel } from "@/utils/hooks/usAIModel";
 import { useUserStore } from "@/store/userStore";
 
 type CategoryKey =
@@ -28,61 +25,19 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [name, setName] = useState("");
-  const [introductions, setIntroductions] = useState("");
-  const [data, setData] = useState("");
-  const [examples, setExamples] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [isFormValid, setIsFormValid] = useState(false);
-  const [nameError, setNameError] = useState("");
-
+  const { aiData, setAIData, handleCreate, loading } = useAIModel();
   const { user } = useUserStore();
-  //ai 이름 띄어쓰기 변경
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newName = e.target.value.replace(/\s+/g, "_");
-    if (newName.length <= 18) {
-      setName(newName);
-      setNameError("");
-    } else {
-      setNameError("Name must be 18 characters or less");
-    }
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setAIData((prev) => ({ ...prev, [name]: value }));
   };
 
-  useEffect(() => {
-    setIsFormValid(
-      name !== "" &&
-        selectedCategory !== "" &&
-        introductions !== "" &&
-        data !== ""
-    );
-  }, [name, selectedCategory, introductions, data]);
-
-  const handleCreate = async () => {
-    if (!isFormValid) return;
-    setLoading(true);
-
-    const aiData = {
-      name: name,
-      creator_address: user?.user_address ?? "",
-      category: selectedCategory,
-      introductions: introductions,
-      rag_contents: data,
-      rag_comments: "CreateAI",
-      profile_image_url: "",
-      created_at: new Date().toISOString(),
-      examples: examples,
-    };
-
-    try {
-      const res = await createAI(aiData);
-      console.log("AI Created successfully", res);
-      onAICreated();
-    } catch (error) {
-      console.error("Error creating AI:", error);
-    } finally {
-      setLoading(false);
-      setOpen(false);
-    }
+  const handleCategoryChange = (category: CategoryKey) => {
+    setSelectedCategory(category);
+    setAIData((prev) => ({ ...prev, category }));
   };
 
   const categories: string[] = [
@@ -95,6 +50,20 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
     "Graphics & Design",
     "Others",
   ];
+
+  const isFormValid =
+    aiData.name !== "" &&
+    selectedCategory !== "" &&
+    aiData.introductions !== "" &&
+    aiData.rag_contents !== "";
+
+  const handleCreateAI = async () => {
+    if (isFormValid) {
+      await handleCreate(aiData);
+      onAICreated(); // Trigger parent callback after AI is created
+      setOpen(false); // Close the sheet
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -114,50 +83,16 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
               Create Custom AI
             </h2>
           </div>
-
           <div className="flex-grow overflow-y-auto p-4 space-y-6">
-            <div className="flex justify-center">
-              <div className="relative size-20 bg-primary-900 rounded-full overflow-hidden">
-                <input
-                  type="file"
-                  id="ai-image"
-                  className="hidden"
-                  accept="image/*"
-                />
-                <label
-                  htmlFor="ai-image"
-                  className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                >
-                  <Plus size={32} className="text-white" />
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="nickname"
-                className="block text-sm font-medium mb-1"
-              >
-                AI Name
-              </label>
-              <input
-                type="text"
-                id="nickname"
-                className="w-full p-2 border-b bg-inherit border-gray-300 focus:border-primary-900 focus:outline-none"
-                placeholder="Name your AI (max 18 characters)"
-                onChange={handleNameChange}
-                value={name}
-                maxLength={18}
-              />
-              {nameError && (
-                <p className="text-red-500 text-xs mt-1">{nameError}</p>
-              )}
-              <p className="text-[12px] p-2">
-                Once created, the name cannot be changed.
-              </p>
-            </div>
-
+            <AIFormField
+              label="AI Name"
+              value={aiData.name}
+              onChange={handleInputChange}
+              placeholder="Name your AI (max 18 characters)"
+              name="name"
+            />
             <div className="space-y-2">
+              <p className="text-sm font-medium">Category</p>
               <div className="flex flex-wrap gap-2">
                 {categories.map((category) => {
                   const categoryKey = category
@@ -167,7 +102,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
                   return (
                     <button
                       key={category}
-                      onClick={() => setSelectedCategory(categoryKey)}
+                      onClick={() => handleCategoryChange(categoryKey)}
                       className={`px-4 text-primary-900 bg-primary-900 border-primary-900 border bg-opacity-10 rounded-full flex-shrink-0 transition-colors duration-200 ease-in-out ${
                         selectedCategory === categoryKey
                           ? "border border-primary-900"
@@ -180,48 +115,32 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
                 })}
               </div>
             </div>
-
-            <div className="space-y-4">
-              <div className="rounded-lg border border-gray-700 py-2 px-3 bg-[#1F222A]">
-                <h3 className="mb-2 pb-1 border-b border-gray-700">
-                  Describe your AI
-                </h3>
-                <textarea
-                  placeholder="Provide a brief first-person description."
-                  className="w-full bg-transparent resize-none focus:outline-none"
-                  rows={2}
-                  onChange={(e) => setIntroductions(e.target.value)}
-                />
-              </div>
-
-              <div className="rounded-lg border border-gray-700 py-2 px-3 bg-[#1F222A]">
-                <h3 className="mb-2 pb-1 border-b border-gray-700">Data</h3>
-                <div className="space-y-2">
-                  <textarea
-                    placeholder="Provide things to learn"
-                    className="w-full bg-transparent focus:outline-none focus:border-primary-900"
-                    rows={3}
-                    onChange={(e) => setData(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="rounded-lg border border-gray-700 py-2 px-3 bg-[#1F222A]">
-                <h3 className=" mb-2 pb-1 border-b border-gray-700">
-                  Examples
-                </h3>
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    placeholder="Provide an example to initiate the conversation"
-                    className="w-full bg-transparent focus:outline-none focus:border-primary-900"
-                    onChange={(e) => setExamples(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
+            <AIFormField
+              label="Describe your AI"
+              value={aiData.introductions}
+              onChange={handleInputChange}
+              placeholder="Provide a brief description"
+              name="introductions"
+              type="textarea"
+              rows={2}
+            />
+            <AIFormField
+              label="Data"
+              value={aiData.rag_contents}
+              onChange={handleInputChange}
+              placeholder="Provide things to learn"
+              name="rag_contents"
+              type="textarea"
+              rows={3}
+            />
+            <AIFormField
+              label="Examples"
+              value={aiData.examples}
+              onChange={handleInputChange}
+              placeholder="Provide an example to initiate the conversation"
+              name="examples"
+            />
           </div>
-
           <div className="p-4">
             <button
               className={`w-full py-4 rounded-full flex items-center justify-center transition-colors duration-200 ${
@@ -229,10 +148,10 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
                   ? "bg-primary-900 text-white hover:bg-primary-700"
                   : "bg-primary-900 bg-opacity-20 text-primary-900 cursor-not-allowed"
               }`}
-              onClick={handleCreate}
-              disabled={!isFormValid}
+              onClick={handleCreateAI}
+              disabled={!isFormValid || loading}
             >
-              Create
+              {loading ? "Creating AI..." : "Create"}
             </button>
           </div>
         </div>

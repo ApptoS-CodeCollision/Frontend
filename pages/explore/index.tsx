@@ -8,51 +8,27 @@ import CategorySelector, {
 import TodaySection from "@/components/explore/TodaySection";
 import RecentSection from "@/components/explore/RecentSection";
 import { useUserStore } from "@/store/userStore";
+import { useLoadAIModels } from "@/utils/hooks/useLoadAIModels";
 
 export default function ExplorePage() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("all");
   const [selectedAI, setSelectedAI] = useState<CardData | null>(null);
-  const [todayCards, setTodayCards] = useState<CardData[] | null>(null);
-  const [trendCards, setTrendCards] = useState<CardData[] | null>(null);
-
-  const [isLoading, setIsLoading] = useState(true);
   const { user } = useUserStore();
 
-  useEffect(() => {
-    const loadAIModels = async () => {
-      if (user && user.user_address) {
-        try {
-          const Todaydata = await fetchTodayAIs(user.user_address);
-          setTodayCards(Todaydata.ais);
-          setIsLoading(false);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    };
-    loadAIModels();
-  }, []);
+  // 'explore' 모드로 설정하여 데이터 로드
+  const { todayCards, trendCards, isLoading, loadAIModels } = useLoadAIModels(
+    "explore",
+    user?.user_address,
+    selectedCategory // 카테고리 적용
+  );
 
   useEffect(() => {
-    const loadAIModels = async () => {
-      if (user && user.user_address) {
-        try {
-          const Trenddata = await fetchTrendingAIs(
-            selectedCategory,
-            user.user_address,
-            { offset: 0, limit: 10 }
-          );
-          setTrendCards(
-            Trenddata.ais.sort(
-              (a: CardData, b: CardData) =>
-                b.daily_user_access - a.daily_user_access
-            )
-          );
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    };
+    if (user?.user_address) {
+      loadAIModels(); // 페이지 처음 로드될 때도 호출되도록 설정
+    }
+  }, [user]); // 의존성 배열에 `user` 추가
+
+  useEffect(() => {
     loadAIModels();
   }, [selectedCategory]);
 
@@ -63,34 +39,18 @@ export default function ExplorePage() {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
-      {selectedCategory === "all" ? (
-        <>
-          <TodaySection
-            isLoading={isLoading}
-            todayCards={todayCards}
-            setSelectedAI={setSelectedAI}
-          />
-          <RecentSection
-            title={"Weekly Trends"}
-            trendCards={trendCards}
-            setSelectedAI={setSelectedAI}
-          />
-        </>
-      ) : (
-        <RecentSection
-          title={selectedCategory}
-          trendCards={trendCards}
-          setSelectedAI={setSelectedAI}
-        />
-      )}
+      <TodaySection
+        isLoading={isLoading}
+        todayCards={todayCards}
+        setSelectedAI={setSelectedAI}
+        refreshData={loadAIModels}
+      />
+      <RecentSection
+        title={selectedCategory === "all" ? "Weekly Trends" : selectedCategory}
+        trendCards={trendCards}
+        setSelectedAI={setSelectedAI}
+        refreshData={loadAIModels}
+      />
     </div>
   );
-}
-
-export async function getStaticProps() {
-  return {
-    props: {
-      title: "Explore",
-    },
-  };
 }
