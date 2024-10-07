@@ -8,26 +8,36 @@ import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
 import avatarImage from "@/assets/avatar.png";
 import { useUserStore } from "@/store/userStore";
-import { addLike, delLike } from "@/utils/api/user";
 import { Heart, ArrowRight } from "lucide-react";
 import { useRouter } from "next/router";
+import { useLikeHandler } from "@/utils/hooks/useLikeHandler";
+import { sliderSettings } from "@/utils/lib/sliderSettings";
 
 interface TodaySectionProps {
   isLoading: boolean;
   todayCards: CardData[] | null;
   setSelectedAI: (ai: CardData | null) => void;
+  refreshData: () => void;
 }
 
 const TodaySection: React.FC<TodaySectionProps> = ({
   isLoading,
   todayCards,
   setSelectedAI,
+  refreshData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUserStore();
-  const [likedAIs, setLikedAIs] = useState<{ [key: string]: boolean }>({});
   const router = useRouter();
   const [showArrows, setShowArrows] = useState(false);
+  const { handleLikeClick } = useLikeHandler(refreshData);
+  const [localCards, setLocalCards] = useState<CardData[] | null>(todayCards); // 기존 데이터를 저장하는 상태
+
+  useEffect(() => {
+    if (todayCards) {
+      setLocalCards(todayCards); // 새로 받은 데이터로 업데이트
+    }
+  }, [todayCards]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,53 +52,24 @@ const TodaySection: React.FC<TodaySectionProps> = ({
     };
   }, []);
 
-  const settings = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: showArrows,
-  };
-
   const handleChatClick = (e: React.MouseEvent, item: CardData) => {
     e.stopPropagation();
     router.push(`/ai/${item.id}/chat`);
   };
 
-  const handleLikeClick = async (e: React.MouseEvent, item: CardData) => {
-    e.stopPropagation();
-    if (!user || !user.user_address) {
-      window.alert("Please log in to like AIs");
-      return;
-    }
-
-    const userData = {
-      user_address: user.user_address,
-      ai_id: item.id,
-    };
-
-    try {
-      if (likedAIs[item.id]) {
-        await delLike(userData);
-        setLikedAIs((prev) => ({ ...prev, [item.id]: false }));
-      } else {
-        await addLike(userData);
-        setLikedAIs((prev) => ({ ...prev, [item.id]: true }));
-      }
-    } catch (error) {
-      window.alert("Failed to update like status");
-    }
+  const dynamicSliderSettings = {
+    ...sliderSettings, // 기본 설정을 복사
+    arrows: showArrows, // showArrows에 따른 arrows 속성 추가
   };
 
   return (
     <section className="mb-6">
       <h2 className="text-lg font-bold mb-4">Today</h2>
-      {isLoading ? (
+      {isLoading && !localCards ? ( // 첫 로딩 상태에서만 Loading... 표시
         <div>Loading...</div>
       ) : (
-        <Slider {...settings}>
-          {todayCards?.map((item: CardData, index: number) => (
+        <Slider {...dynamicSliderSettings}>
+          {localCards?.map((item: CardData, index: number) => (
             <div key={item.id}>
               <Dialog
                 onOpenChange={(open) => {
@@ -103,10 +84,14 @@ const TodaySection: React.FC<TodaySectionProps> = ({
                         #{index + 1}
                       </div>
                       <div className="absolute top-4 right-4">
-                        <button onClick={(e) => handleLikeClick(e, item)}>
+                        <button
+                          onClick={(e) =>
+                            handleLikeClick(e, item.id, item.like)
+                          }
+                        >
                           <Heart
-                            color={likedAIs[item.id] ? "#F75555" : "white"}
-                            fill={likedAIs[item.id] ? "#F75555" : "none"}
+                            color={item.like ? "#F75555" : "white"}
+                            fill={item.like ? "#F75555" : "none"}
                             size={24}
                           />
                         </button>

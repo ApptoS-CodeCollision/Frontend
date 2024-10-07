@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+// pages/EditAIPage.tsx
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Plus } from "lucide-react";
-import { fetchAIDetails, updateAI } from "@/utils/api/ai";
+import { useAIModel } from "@/utils/hooks/useAIModel";
+import AIFormField from "@/components/AIFormField";
 import { useUserStore } from "@/store/userStore";
 
 type CategoryKey =
@@ -19,46 +21,12 @@ const EditAIPage = () => {
   const { id } = router.query;
   const { user } = useUserStore();
 
-  const [aiData, setAIData] = useState({
-    name: "",
-    category: "others" as CategoryKey,
-    introductions: "",
-    rag_contents: "",
-    profile_image_url: "",
-    examples: "",
-    created_at: "",
-  });
-  const [loading, setLoading] = useState(true);
-  const [updateLoading, setUpdateLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { aiData, setAIData, loadAIData, handleUpdate, loading, error } =
+    useAIModel(id as string);
 
   useEffect(() => {
-    const loadAIData = async () => {
-      if (id && typeof id === "string") {
-        try {
-          setLoading(true);
-          const fetchedAIData = await fetchAIDetails(id);
-          console.log(fetchedAIData);
-          setAIData({
-            name: fetchedAIData.name,
-            category: fetchedAIData.category as CategoryKey,
-            introductions: fetchedAIData.introductions,
-            rag_contents: fetchedAIData.rag_contents,
-            profile_image_url: fetchedAIData.profile_image_url,
-            examples: fetchedAIData.examples,
-            created_at: new Date().toISOString(),
-          });
-        } catch (error) {
-          console.error("Error fetching AI data:", error);
-          setError("Failed to load AI data. Please try again.");
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
     if (id) {
-      loadAIData();
+      loadAIData(); // Load the AI details when the page loads
     }
   }, [id]);
 
@@ -74,36 +42,6 @@ const EditAIPage = () => {
 
   const handleCategoryChange = (category: CategoryKey) => {
     setAIData((prevData) => ({ ...prevData, category }));
-  };
-
-  console.log(aiData);
-
-  const handleUpdate = async () => {
-    setUpdateLoading(true);
-
-    if (!id || typeof id !== "string" || !user?.user_address) {
-      console.error("Missing AI ID or wallet address");
-      setUpdateLoading(false);
-      return;
-    }
-
-    const updatedAIData = {
-      id: id,
-      creator_address: user?.user_address,
-      ...aiData,
-      rag_comments: "UpdatedAI",
-    };
-
-    try {
-      const res = await updateAI(updatedAIData);
-      console.log("AI Updated successfully", res);
-      router.push("/mypage");
-    } catch (error) {
-      console.error("Error updating AI:", error);
-      setError("Failed to update AI. Please try again.");
-    } finally {
-      setUpdateLoading(false);
-    }
   };
 
   const categories: string[] = [
@@ -129,6 +67,7 @@ const EditAIPage = () => {
     <>
       <div className="flex-grow overflow-y-auto px-4 pb-32 scrollbar-hide">
         <div className="space-y-6 pb-20">
+          {/* Image Upload Section */}
           <div className="flex justify-center">
             <div className="relative size-20 bg-primary-900 rounded-full overflow-hidden">
               {aiData.profile_image_url ? (
@@ -159,6 +98,7 @@ const EditAIPage = () => {
             </div>
           </div>
 
+          {/* AI Name */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-1">
               AI Name
@@ -166,6 +106,7 @@ const EditAIPage = () => {
             <p className="font-bold">{aiData.name}</p>
           </div>
 
+          {/* Category Selection */}
           <div className="space-y-2">
             <p className="text-sm font-medium">Category</p>
             <div className="flex flex-wrap gap-2">
@@ -191,58 +132,47 @@ const EditAIPage = () => {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="rounded-lg border border-gray-700 py-2 px-3 bg-[#1F222A]">
-              <h3 className="mb-2 pb-1 border-b border-gray-700">
-                Describe your AI
-              </h3>
-              <textarea
-                name="introductions"
-                value={aiData.introductions}
-                placeholder="Add a short description"
-                className="w-full bg-transparent resize-none focus:outline-none"
-                rows={2}
-                onChange={handleInputChange}
-              />
-            </div>
+          {/* Description, Data, and Examples Fields */}
+          <AIFormField
+            label="Describe your AI"
+            value={aiData.introductions}
+            onChange={handleInputChange}
+            placeholder="Add a short description"
+            name="introductions"
+            type="textarea"
+            rows={2}
+          />
 
-            <div className="rounded-lg border border-gray-700 py-2 px-3 bg-[#1F222A]">
-              <h3 className="mb-2 pb-1 border-b border-gray-700">Data</h3>
-              <div className="space-y-2">
-                <textarea
-                  name="rag_contents"
-                  value={aiData.rag_contents}
-                  placeholder="Provide things to learn"
-                  className="w-full bg-transparent resize-none focus:outline-none"
-                  rows={3}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className="rounded-lg border border-gray-700 py-2 px-3 bg-[#1F222A]">
-              <h3 className="mb-2 pb-1 border-b border-gray-700 pb-2 border-b">
-                Examples
-              </h3>
-              <textarea
-                name="examples"
-                value={aiData.examples}
-                placeholder="Provide a short example of this AI."
-                className="w-full bg-transparent resize-none focus:outline-none"
-                rows={1}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
+          <AIFormField
+            label="Data"
+            value={aiData.rag_contents}
+            onChange={handleInputChange}
+            placeholder="Provide things to learn"
+            name="rag_contents"
+            type="textarea"
+            rows={3}
+          />
+
+          <AIFormField
+            label="Examples"
+            value={aiData.examples}
+            onChange={handleInputChange}
+            placeholder="Provide a short example of this AI."
+            name="examples"
+            type="textarea"
+            rows={1}
+          />
         </div>
       </div>
 
+      {/* Update Button */}
       <div className="fixed bottom-16 left-0 right-0 p-4 bg-black max-w-[600px] mx-auto">
         <button
           className="w-full py-4 rounded-full flex items-center justify-center bg-primary-900 text-white hover:bg-primary-700"
-          onClick={handleUpdate}
-          disabled={updateLoading}
+          onClick={() => handleUpdate(aiData)}
+          disabled={loading}
         >
-          {updateLoading ? "Updating..." : "Update AI"}
+          {loading ? "Updating..." : "Update AI"}
         </button>
       </div>
     </>

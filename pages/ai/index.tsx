@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
 import { AIModel } from "@/utils/interface";
-import Search from "@/components/Search";
+import Search from "@/components/search/Search";
 const ITEMS_PER_LOAD = 3;
 
 const ListPage = () => {
@@ -10,7 +10,6 @@ const ListPage = () => {
   const [loading, setLoading] = useState(false);
   const [aiList, setAiList] = useState<AIModel[]>([]);
   const observer = useRef<IntersectionObserver | null>(null);
-
 
   const lastCardElementRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -23,7 +22,7 @@ const ListPage = () => {
       });
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore],
+    [loading, hasMore]
   );
 
   const loadMoreCards = () => {
@@ -32,7 +31,7 @@ const ListPage = () => {
       setDisplayedCards((prevCards) => {
         const newCards = aiList.slice(
           prevCards.length,
-          prevCards.length + ITEMS_PER_LOAD,
+          prevCards.length + ITEMS_PER_LOAD
         );
         if (prevCards.length + newCards.length >= aiList.length) {
           setHasMore(false);
@@ -47,11 +46,7 @@ const ListPage = () => {
     loadMoreCards();
   }, []);
 
-  return (
-    <div className="flex-grow overflow-y-auto">
-
-    </div>
-  );
+  return <div className="flex-grow overflow-y-auto"></div>;
 };
 
 export default ListPage;

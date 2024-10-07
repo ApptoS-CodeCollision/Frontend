@@ -9,12 +9,14 @@ interface RecentSectionProps {
   title: string;
   trendCards: CardData[] | null;
   setSelectedAI: (ai: CardData | null) => void;
+  refreshData: () => void;
 }
 
 const RecentSection: React.FC<RecentSectionProps> = ({
   title,
   trendCards,
   setSelectedAI,
+  refreshData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -43,7 +45,7 @@ const RecentSection: React.FC<RecentSectionProps> = ({
                     name={item.name}
                     category={item.category}
                     like={item.like}
-                    onChatClick={(e) => handleChatClick(e, item)}
+                    refreshData={refreshData}
                   />
                 </div>
               </DialogTrigger>

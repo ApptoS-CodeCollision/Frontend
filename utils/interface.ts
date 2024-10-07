@@ -96,6 +96,7 @@ export interface ChatResponse {
 }
 
 export interface CardData {
+  aiId: any;
   id: string;
   name: string;
   creator_address: string;
