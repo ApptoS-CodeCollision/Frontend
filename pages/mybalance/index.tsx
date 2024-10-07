@@ -7,6 +7,7 @@ import { charge, fetchTrial } from "@/utils/api/user";
 import AIBalanceCard from "@/components/mybalance/AIBalanceCard";
 import BalanceOverview from "@/components/mybalance/BalanceOverview";
 import { useLoadAIModels } from "@/utils/hooks/useLoadAIModels";
+import { useAptos } from "@/utils/hooks/useAptos";
 
 const MyBalancePage = () => {
   const [remainTrial, setRemainTrial] = useState(0);
@@ -20,7 +21,11 @@ const MyBalancePage = () => {
     "myAI",
     user?.user_address // user_address를 전달
   );
-  console.log(myAIs);
+
+  (async () => {
+    const { aptos, chainId } = await useAptos(); // Await the async function
+    console.log(chainId);
+  })();
 
   // 페이지가 로드될 때 AI 모델들을 불러오는 함수 호출
   useEffect(() => {

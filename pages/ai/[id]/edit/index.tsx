@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Plus } from "lucide-react";
-import { useAIModel } from "@/utils/hooks/usAIModel";
+import { useAIModel } from "@/utils/hooks/useAIModel";
 import AIFormField from "@/components/AIFormField";
 import { useUserStore } from "@/store/userStore";
 

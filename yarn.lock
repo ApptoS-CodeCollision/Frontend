@@ -69,6 +69,23 @@
     jwt-decode "^4.0.0"
     poseidon-lite "^0.2.0"
 
+"@aptos-labs/ts-sdk@^1.29.0":
+  version "1.29.0"
+  resolved "https://registry.yarnpkg.com/@aptos-labs/ts-sdk/-/ts-sdk-1.29.0.tgz#5935ce569746a3179e79a7076bbf6995da7ce3ca"
+  integrity sha512-aKYPXOqrSj/y+mDBa7r0PMxryqmLs2oxo0ZCvyx3t8712cFXxAA22jdcWpq6Mym4mTg1UY6Nc6MgbeiYjhJYng==
+  dependencies:
+    "@aptos-labs/aptos-cli" "^0.2.0"
+    "@aptos-labs/aptos-client" "^0.1.1"
+    "@noble/curves" "^1.4.0"
+    "@noble/hashes" "^1.4.0"
+    "@scure/bip32" "^1.4.0"
+    "@scure/bip39" "^1.3.0"
+    eventemitter3 "^5.0.1"
+    form-data "^4.0.0"
+    js-base64 "^3.7.7"
+    jwt-decode "^4.0.0"
+    poseidon-lite "^0.2.0"
+
 "@aptos-labs/wallet-adapter-core@4.17.0":
   version "4.17.0"
   resolved "https://registry.yarnpkg.com/@aptos-labs/wallet-adapter-core/-/wallet-adapter-core-4.17.0.tgz#bd09cc7b72370c3d5f8db90949bc86b0ca2a9a27"

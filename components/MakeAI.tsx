@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Plus } from "lucide-react";
 import AIFormField from "@/components/AIFormField";
-import { useAIModel } from "@/utils/hooks/usAIModel";
+import { useAIModel } from "@/utils/hooks/useAIModel";
 import { useUserStore } from "@/store/userStore";
 
 type CategoryKey =
