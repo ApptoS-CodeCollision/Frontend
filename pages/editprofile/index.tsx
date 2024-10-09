@@ -47,6 +47,7 @@ const EditProfilePage = () => {
 
       <ProfileForm
         initialProfileImage={user?.profile_image_url}
+        initialNickname={user?.nickname}
         initialGender={user?.gender}
         initialCountry={user?.country}
         initialInterest={user?.interest}
