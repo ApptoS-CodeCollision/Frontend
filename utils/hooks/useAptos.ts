@@ -49,10 +49,10 @@ export const useAptosCall = () => {
 
       // 트랜잭션 빌드
       const transaction = await aptos.transaction.build.simple({
-        sender: account.address,
+        sender: account?.address || "",
         data: {
           function: `${CONTRACT_ADDRESS}::${MODULE}::${functionName}`,
-          functionArguments: [account.address],
+          functionArguments: [account?.address],
         },
       });
 
@@ -64,7 +64,7 @@ export const useAptosCall = () => {
           type: "entry_function_payload",
           function: `${CONTRACT_ADDRESS}::${MODULE}::${functionName}`,
           type_arguments: [],
-          arguments: [account?.address], // 1 is in Octas
+          arguments: [account?.address],
         };
         const response = await signTransaction(payload);
 
@@ -81,10 +81,10 @@ export const useAptosCall = () => {
       } else {
         // Fee Payer 없이 일반 트랜잭션
         committedTransaction = await signAndSubmitTransaction({
-          sender: account.address,
+          sender: account?.address || "",
           data: {
             function: `${CONTRACT_ADDRESS}::${MODULE}::${functionName}`,
-            functionArguments: [account.address],
+            functionArguments: [account?.address],
           },
         });
       }
