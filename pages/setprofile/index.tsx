@@ -4,11 +4,22 @@ import ProfileForm from "@/components/profile/ProfileForm";
 import { addUser } from "@/utils/api/user";
 import { useUserStore } from "@/store/userStore";
 import { User } from "@/utils/interface";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { useAptosCall } from "@/utils/hooks/useAptos";
+import {
+  Aptos,
+  AptosConfig,
+  Network,
+  Account,
+  Ed25519PrivateKey,
+} from "@aptos-labs/ts-sdk";
 
 const SetProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { wallet, setUser } = useUserStore();
+  const { account, signAndSubmitTransaction } = useWallet();
+  const { executeTransaction, loading, error, result } = useAptosCall();
 
   const handleSubmit = async (profileData: {
     selectedProfile: string;
@@ -21,18 +32,21 @@ const SetProfilePage = () => {
       if (!wallet || !wallet.address) {
         throw new Error("Wallet address is not available");
       }
-      const userData: User = {
-        user_address: wallet.address,
-        nickname: "", // Add nickname if needed
-        profile_image_url: profileData.selectedProfile,
-        gender: profileData.gender,
-        country: profileData.country,
-        interest: profileData.interest,
-      };
+      console.log(1);
+      await executeTransaction("register_user", false);
+      console.log(result);
+      // const userData: User = {
+      //   user_address: wallet.address,
+      //   nickname: "", // Add nickname if needed
+      //   profile_image_url: profileData.selectedProfile,
+      //   gender: profileData.gender,
+      //   country: profileData.country,
+      //   interest: profileData.interest,
+      // };
 
-      const result = await addUser(userData);
-      setUser(result);
-      router.push("/explore");
+      // const result = await addUser(userData);
+      // setUser(result);
+      // router.push("/explore");
     } catch (error) {
       throw error;
     } finally {
