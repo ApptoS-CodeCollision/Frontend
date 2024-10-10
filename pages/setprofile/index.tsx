@@ -33,7 +33,7 @@ const SetProfilePage = () => {
         throw new Error("Wallet address is not available");
       }
       console.log(1);
-      await executeTransaction("register_user", false);
+      await executeTransaction("test_add_rag", ["sububub_test"]);
       console.log(result);
       // const userData: User = {
       //   user_address: wallet.address,
