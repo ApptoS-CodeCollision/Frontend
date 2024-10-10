@@ -9,8 +9,10 @@ interface ProfileFormProps {
   initialGender?: string;
   initialCountry?: string;
   initialInterest?: string;
+  initialNickname?: string;
   onSubmit: (profileData: {
     selectedProfile: string;
+    nickname: string;
     gender: string;
     country: string;
     interest: string;
@@ -27,6 +29,7 @@ const profileImages = [
 
 const ProfileForm: React.FC<ProfileFormProps> = ({
   initialProfileImage,
+  initialNickname = "",
   initialGender = "",
   initialCountry = "",
   initialInterest = "",
@@ -35,6 +38,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   submitText,
 }) => {
   const [selectedProfile, setSelectedProfile] = useState(0);
+  const [nickname, setNickname] = useState(initialNickname);
   const [gender, setGender] = useState(initialGender);
   const [country, setCountry] = useState(initialCountry);
   const [interest, setInterest] = useState(initialInterest);
@@ -43,7 +47,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   useEffect(() => {
     if (initialProfileImage) {
       const index = profileImages.findIndex(
-        (img) => img === initialProfileImage
+        (img) => img === initialProfileImage,
       );
       setSelectedProfile(index !== -1 ? index + 1 : 0);
     }
@@ -55,6 +59,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       setError("");
       await onSubmit({
         selectedProfile: profileImages[selectedProfile - 1] || "",
+        nickname,
         gender,
         country,
         interest,
@@ -103,6 +108,24 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         ))}
       </div>
 
+      <div>
+        <label
+          htmlFor="nickname"
+          className="block text-sm font-medium text-gray-300 mb-1"
+        >
+          Nickname
+        </label>
+        <input
+          type="text"
+          id="nickname"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          className="w-full p-2 border-b border-gray-600 focus:border-primary-900 focus:outline-none bg-transparent text-white"
+          placeholder="Name"
+          required
+        />
+      </div>
+
       <GenderSelect value={gender} onChange={setGender} />
       <CountrySelect value={country} onChange={setCountry} />
 
@@ -127,7 +150,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
       {error && <p className="text-red-500">{error}</p>}
 
-      <div className="pb-6 flex-shrink-0">
+      <div className="pb-20 flex-shrink-0">
         <button
           type="submit"
           disabled={isLoading}
