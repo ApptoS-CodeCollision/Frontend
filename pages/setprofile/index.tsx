@@ -18,10 +18,11 @@ const SetProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { wallet, setUser } = useUserStore();
-  const { account, signAndSubmitTransaction } = useWallet();
-  const { executeTransaction, loading, error, result } = useAptosCall();
+  // const { executeTransaction, loading, error, result } = useAptosCall();
+  // await executeTransaction("test_add_rag", ["sububub_test"]);
 
   const handleSubmit = async (profileData: {
+    nickname: string;
     selectedProfile: string;
     gender: string;
     country: string;
@@ -32,21 +33,19 @@ const SetProfilePage = () => {
       if (!wallet || !wallet.address) {
         throw new Error("Wallet address is not available");
       }
-      console.log(1);
-      await executeTransaction("test_add_rag", ["sububub_test"]);
-      console.log(result);
-      // const userData: User = {
-      //   user_address: wallet.address,
-      //   nickname: "", // Add nickname if needed
-      //   profile_image_url: profileData.selectedProfile,
-      //   gender: profileData.gender,
-      //   country: profileData.country,
-      //   interest: profileData.interest,
-      // };
 
-      // const result = await addUser(userData);
-      // setUser(result);
-      // router.push("/explore");
+      const userData: User = {
+        user_address: wallet.address,
+        nickname: profileData.nickname, // Add nickname if needed
+        profile_image_url: profileData.selectedProfile,
+        gender: profileData.gender,
+        country: profileData.country,
+        interest: profileData.interest,
+      };
+
+      const result = await addUser(userData);
+      setUser(result);
+      router.push("/explore");
     } catch (error) {
       throw error;
     } finally {

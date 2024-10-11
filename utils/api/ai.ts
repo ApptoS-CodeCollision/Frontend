@@ -82,6 +82,7 @@ export async function createAI(aiData: {
   created_at: string;
   examples: string;
 }) {
+  console.log(aiData.rag_comments);
   return await apiRequest(AI_API.LIST, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

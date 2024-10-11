@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <WalletProvider>
-      <Layout title={pageProps.title || "Near and Dear"}>
+      <Layout title={pageProps.title || "App to S"}>
         <PageComponent {...pageProps} />
       </Layout>
     </WalletProvider>

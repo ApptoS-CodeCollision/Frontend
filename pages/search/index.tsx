@@ -18,11 +18,9 @@ export default function SearchPage() {
     "", // 카테고리도 필요없음
     searchQuery // 검색어 적용
   );
-  console.log(cards);
   useEffect(() => {
     loadAIModels();
   }, [searchQuery]);
-  console.log(sortBy);
   const sortedCards = (cards: CardData[] | null) => {
     if (!cards) return [];
     return [...cards].sort((a, b) => {

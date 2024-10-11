@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import AIFormField from "@/components/AIFormField";
 import { useAIModel } from "@/utils/hooks/useAIModel";
 import { useUserStore } from "@/store/userStore";
+import { useAptosCall } from "@/utils/hooks/useAptos";
 
 type CategoryKey =
   | "education"
@@ -27,6 +28,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
   const [selectedCategory, setSelectedCategory] = useState("");
   const { aiData, setAIData, handleCreate, loading } = useAIModel();
   const { user } = useUserStore();
+  const { executeTransaction } = useAptosCall();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -59,7 +61,8 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
 
   const handleCreateAI = async () => {
     if (isFormValid) {
-      await handleCreate(aiData);
+      const createData = { ...aiData, rag_comments: "Create AI" };
+      await handleCreate(createData);
       onAICreated(); // Trigger parent callback after AI is created
       setOpen(false); // Close the sheet
     }

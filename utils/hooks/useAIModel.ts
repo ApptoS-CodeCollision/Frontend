@@ -10,11 +10,12 @@ export const useAIModel = (aiId?: string) => {
     category: "others",
     introductions: "",
     rag_contents: "",
+    rag_comments: "",
     profile_image_url: "",
     examples: "",
     created_at: new Date().toISOString(),
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { user } = useUserStore();
   const router = useRouter();
@@ -29,6 +30,7 @@ export const useAIModel = (aiId?: string) => {
           category: fetchedAIData.category,
           introductions: fetchedAIData.introductions,
           rag_contents: fetchedAIData.rag_contents,
+          rag_comments: fetchedAIData.rag_comments,
           profile_image_url: fetchedAIData.profile_image_url,
           examples: fetchedAIData.examples,
           created_at: fetchedAIData.created_at || new Date().toISOString(),

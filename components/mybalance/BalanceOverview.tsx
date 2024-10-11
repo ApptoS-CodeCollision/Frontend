@@ -4,15 +4,11 @@ import { Plus } from "lucide-react";
 interface BalanceOverviewProps {
   totalBalance: number;
   totalEarnings: number;
-  remainTrial: number;
-  handleChargeClick: () => void;
 }
 
 const BalanceOverview: React.FC<BalanceOverviewProps> = ({
   totalBalance,
   totalEarnings,
-  remainTrial,
-  handleChargeClick,
 }) => {
   return (
     <div className="bg-primary-900 bg-opacity-[42%] rounded-xl p-4 mb-6 text-center">
@@ -31,16 +27,6 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({
           </p>
         </div>
       </div>
-      {remainTrial > 0 ? (
-        <div>Free Trial {remainTrial} Left</div>
-      ) : (
-        <button
-          className="w-full bg-primary-900 text-white py-1 rounded-full font-semibold flex items-center justify-center"
-          onClick={handleChargeClick}
-        >
-          <Plus className="mr-2" /> Charge
-        </button>
-      )}
     </div>
   );
 };

@@ -1,16 +1,12 @@
 // pages/my-balance.tsx
-import { useEffect, useState } from "react";
-import { fetchMyAIs } from "@/utils/api/ai";
-import { AIDetailProps } from "@/utils/interface";
+import { useEffect } from "react";
+
 import { useUserStore } from "@/store/userStore";
-import { charge, fetchTrial } from "@/utils/api/user";
 import AIBalanceCard from "@/components/mybalance/AIBalanceCard";
 import BalanceOverview from "@/components/mybalance/BalanceOverview";
 import { useLoadAIModels } from "@/utils/hooks/useLoadAIModels";
-import { useAptos } from "@/utils/hooks/useAptos";
 
 const MyBalancePage = () => {
-  const [remainTrial, setRemainTrial] = useState(0);
   const { user } = useUserStore();
   // 'myAI' 모드로 useLoadAIModels 사용
   const {
@@ -22,28 +18,12 @@ const MyBalancePage = () => {
     user?.user_address // user_address를 전달
   );
 
-  (async () => {
-    const { aptos, chainId } = await useAptos(); // Await the async function
-    console.log(chainId);
-  })();
-
   // 페이지가 로드될 때 AI 모델들을 불러오는 함수 호출
   useEffect(() => {
     if (user?.user_address) {
       loadAIModels();
     }
   }, [user?.user_address, loadAIModels]);
-
-  const handleChargeClick = async () => {
-    try {
-      if (user && user.user_address) {
-        const result = await charge({ user_address: user.user_address });
-        window.alert("Charge Complete");
-      }
-    } catch (e) {
-      window.alert("Charge Failed");
-    }
-  };
 
   if (isLoading) {
     return <div className="text-white">Loading...</div>;
@@ -66,8 +46,6 @@ const MyBalancePage = () => {
       <BalanceOverview
         totalBalance={totalBalance}
         totalEarnings={totalEarnings}
-        remainTrial={remainTrial}
-        handleChargeClick={handleChargeClick}
       />
       <h2 className="text-white text-xl font-semibold mb-4">
         Overview of My Creations

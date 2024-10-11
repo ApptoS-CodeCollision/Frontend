@@ -22,11 +22,6 @@ export const useAptosCall = () => {
   const [error, setError] = useState<any>();
   const [result, setResult] = useState<any>();
 
-  useEffect(() => {
-    // 네트워크를 강제로 TESTNET으로 변경
-    changeNetwork(Network.TESTNET);
-  }, []);
-
   const executeTransaction = async (functionName: string, args: any[]) => {
     if (!account) {
       console.log("Wallet account is not available");
