@@ -103,7 +103,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
       </SheetTrigger>
       <SheetContent
         side="bottom"
-        className="h-[calc(100vh-4rem)] p-0 border-t-0"
+        className="max-w-[600px] mx-auto h-[calc(100vh-4rem)] p-0 border-t-0"
       >
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-4">
