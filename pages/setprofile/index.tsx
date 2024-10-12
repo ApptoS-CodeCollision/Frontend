@@ -18,8 +18,7 @@ const SetProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { wallet, setUser } = useUserStore();
-  // const { executeTransaction, loading, error, result } = useAptosCall();
-  // await executeTransaction("test_add_rag", ["sububub_test"]);
+  const { executeTransaction } = useAptosCall();
 
   const handleSubmit = async (profileData: {
     nickname: string;
@@ -33,6 +32,8 @@ const SetProfilePage = () => {
       if (!wallet || !wallet.address) {
         throw new Error("Wallet address is not available");
       }
+
+      await executeTransaction("register_user", []);
 
       const userData: User = {
         user_address: wallet.address,

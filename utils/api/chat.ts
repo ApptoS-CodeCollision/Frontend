@@ -60,11 +60,8 @@ export async function fetchChatHistory(chatid: string): Promise<Message[]> {
       };
     });
   } catch (error: any) {
-    if (error.message.includes("404")) {
-      return [];
-    }
     console.error("Error fetching chat history:", error);
-    throw error;
+    return [];
   }
 }
 

@@ -41,7 +41,7 @@ const AIChat = () => {
     if (!chatId || !user?.user_address) return;
 
     try {
-      const chatHistory = await fetchChatHistory(chatId, user?.user_address);
+      const chatHistory = await fetchChatHistory(chatId);
       console.log(chatHistory);
       if (chatHistory.length === 0) {
         await createChat({

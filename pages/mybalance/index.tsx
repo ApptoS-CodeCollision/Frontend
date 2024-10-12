@@ -1,10 +1,11 @@
 // pages/my-balance.tsx
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useUserStore } from "@/store/userStore";
 import AIBalanceCard from "@/components/mybalance/AIBalanceCard";
 import BalanceOverview from "@/components/mybalance/BalanceOverview";
 import { useLoadAIModels } from "@/utils/hooks/useLoadAIModels";
+import { useAptosCall } from "@/utils/hooks/useAptos";
 
 const MyBalancePage = () => {
   const { user } = useUserStore();
@@ -17,12 +18,25 @@ const MyBalancePage = () => {
     "myAI",
     user?.user_address // user_address를 전달
   );
+  const [trial, setTrial] = useState(0);
+
+  const { viewTransaction } = useAptosCall();
+
+  const getTrial = async () => {
+    const res = await viewTransaction("get_free_trial_count", [
+      user?.user_address,
+    ]);
+    if (typeof res === "string") {
+      setTrial(Number(res));
+    }
+  };
 
   // 페이지가 로드될 때 AI 모델들을 불러오는 함수 호출
   useEffect(() => {
     if (user?.user_address) {
       loadAIModels();
     }
+    getTrial();
   }, [user?.user_address, loadAIModels]);
 
   if (isLoading) {
@@ -46,6 +60,7 @@ const MyBalancePage = () => {
       <BalanceOverview
         totalBalance={totalBalance}
         totalEarnings={totalEarnings}
+        trial={trial}
       />
       <h2 className="text-white text-xl font-semibold mb-4">
         Overview of My Creations
@@ -53,6 +68,7 @@ const MyBalancePage = () => {
       {myAIs?.map((ai) => (
         <AIBalanceCard
           key={ai.id}
+          id={ai.id}
           name={ai.name}
           category={ai.category}
           imageSrc={ai.profile_image_url}

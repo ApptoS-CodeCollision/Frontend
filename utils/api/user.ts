@@ -29,7 +29,9 @@ const USER_API = {
   ADD_LIKE: "/likes/",
   TRIAL: (user_address: string) =>
     `/contracts/free_trial_count/?user_address=${user_address}`,
-  CHARGE: (user_address: string) => `/users/charge/${user_address}`,
+  REQUEST_FAUCET: (user_address: string) => `/users/faucet/${user_address}`,
+  COLLECT: (user_address: string, ai_id: string) =>
+    `/contracts/claim_rewards_by_ai/${user_address}/${ai_id}`,
 };
 
 // 사용자 추가
@@ -140,9 +142,21 @@ export async function fetchTrial(user_address: string) {
 }
 
 // 유저 충전
-export async function charge(userData: { user_address: string }) {
-  return await apiRequest(USER_API.CHARGE(userData.user_address), {
+export async function requsetFaucet(user_address: string) {
+  return await apiRequest(USER_API.REQUEST_FAUCET(user_address), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
   });
+}
+export async function collect(userData: {
+  user_address: string;
+  ai_id: string;
+}) {
+  return await apiRequest(
+    USER_API.COLLECT(userData.user_address, userData.ai_id),
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 }

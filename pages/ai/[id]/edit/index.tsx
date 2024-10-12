@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { useAIModel } from "@/utils/hooks/useAIModel";
 import AIFormField from "@/components/AIFormField";
 import { useUserStore } from "@/store/userStore";
+import { useAptosCall } from "@/utils/hooks/useAptos";
 
 type CategoryKey =
   | "education"
@@ -20,6 +21,7 @@ const EditAIPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const { user } = useUserStore();
+  const { executeTransaction } = useAptosCall();
 
   const { aiData, setAIData, loadAIData, handleUpdate, loading, error } =
     useAIModel(id as string);
@@ -54,6 +56,24 @@ const EditAIPage = () => {
     "Graphics & Design",
     "Others",
   ];
+
+  const handleUpdateAI = async () => {
+    const res: any = await executeTransaction("store_rag_data", [
+      user?.user_address + "_" + aiData.name,
+      aiData.rag_contents,
+    ]);
+
+    if (res) {
+      const createData = {
+        ...aiData,
+        rag_comments: "Update AI",
+        tx_hash: res.hash,
+      };
+      await handleUpdate(createData);
+    } else {
+      window.alert("Fail to Update AI");
+    }
+  };
 
   if (loading) {
     return <div>Loading AI data...</div>;
@@ -169,7 +189,7 @@ const EditAIPage = () => {
       <div className="fixed bottom-16 left-0 right-0 p-4 bg-black max-w-[600px] mx-auto">
         <button
           className="w-full py-4 rounded-full flex items-center justify-center bg-primary-900 text-white hover:bg-primary-700"
-          onClick={() => handleUpdate({ ...aiData, rag_comments: "UPDATE AI" })}
+          onClick={handleUpdateAI}
           disabled={loading}
         >
           {loading ? "Updating..." : "Update AI"}
