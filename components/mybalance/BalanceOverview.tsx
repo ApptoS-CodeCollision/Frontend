@@ -40,14 +40,14 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({
         <div className="flex-1 pr-2">
           <p className="text-[#B9F0DE] text-sm mb-1">My Balance</p>
           <p className="text-white text-2xl font-bold">
-            {decimalconverter(totalBalance)} AS
+            {decimalconverter(totalBalance)} APT
           </p>
         </div>
         <div className="w-px bg-[#B9F0DE] self-stretch mx-2"></div>
         <div className="flex-1 pl-2">
           <p className="text-[#B9F0DE] text-sm mb-1">Earnings</p>
           <p className="text-white text-2xl font-bold">
-            {decimalconverter(totalEarnings)} AS
+            {decimalconverter(totalEarnings)} APT
           </p>
         </div>
       </div>
@@ -63,7 +63,7 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({
             className="w-1/2 p-2 rounded-full flex items-center justify-center bg-[#2A2D36] hover:bg-primary-700"
             onClick={handleCharge}
           >
-            Charge AS
+            Charge APT
           </button>
         </div>
       ) : (
