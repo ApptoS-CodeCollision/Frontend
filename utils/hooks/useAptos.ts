@@ -11,20 +11,13 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useEffect, useState } from "react";
 
 export const useAptosCall = () => {
-  const {
-    account,
-    signAndSubmitTransaction,
-    signTransaction,
-    changeNetwork,
-    network,
-    wallet,
-  } = useWallet();
+  const { account, signAndSubmitTransaction } = useWallet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>();
   const aptosConfig = new AptosConfig({ network: Network.TESTNET });
   const aptos = new Aptos(aptosConfig);
   const CONTRACT_ADDRESS =
-    "0x9203c5491c81c1a49e8e92ee795f1e93af2c5dec259cd7cdafbab15167446668";
+    "0x36e9f3432b9ec4aa062e23449139a4e23c1eaa2aadf0071ce5114fccbe7b9071";
   const MODULE = "reward";
 
   const executeTransaction = async (functionName: string, args: any[]) => {
@@ -35,13 +28,13 @@ export const useAptosCall = () => {
 
     try {
       setLoading(true);
-      let committedTransaction;
 
       // Fee Payer 없이 일반 트랜잭션
-      committedTransaction = await signAndSubmitTransaction({
+      let committedTransaction = await signAndSubmitTransaction({
         sender: account.address,
         data: {
           function: `${CONTRACT_ADDRESS}::${MODULE}::${functionName}`,
+          typeArguments: [],
           functionArguments: args,
         },
       });

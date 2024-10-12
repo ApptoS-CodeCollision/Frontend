@@ -18,15 +18,17 @@ const EditProfilePage = () => {
     setIsLoading(true);
     try {
       if (!user || !user.user_address) {
-        throw new Error("Wallet address is not available");
+        window.alert("Wallet address is not available");
+        router.push("/");
+        return;
       }
       const updatedUserData = {
-        user_address: user.user_address,
+        user_address: user?.user_address,
         profile_image_url: profileData.selectedProfile,
         gender: profileData.gender,
         country: profileData.country,
         interest: profileData.interest,
-        trial: user.trial,
+        trial: user?.trial,
       };
 
       const result = await updateUser(updatedUserData);
