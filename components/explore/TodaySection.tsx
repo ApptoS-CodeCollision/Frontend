@@ -6,7 +6,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
-import avatarImage from "@/assets/avatar.png";
+import logoImg from "@/assets/taillogo.png";
 import { useUserStore } from "@/store/userStore";
 import { Heart, ArrowRight } from "lucide-react";
 import { useRouter } from "next/router";
@@ -78,7 +78,7 @@ const TodaySection: React.FC<TodaySectionProps> = ({
                 }}
               >
                 <DialogTrigger asChild>
-                  <div className="p-2 cursor-pointer">
+                  <div className="p-4 cursor-pointer">
                     <div className="bg-gradient-custom rounded-3xl overflow-hidden relative">
                       <div className="absolute top-4 left-4 bg-gray-900 bg-opacity-90 text-emerald-500 text-xl font-bold py-1 px-3 rounded-full">
                         #{index + 1}
@@ -96,16 +96,28 @@ const TodaySection: React.FC<TodaySectionProps> = ({
                           />
                         </button>
                       </div>
-                      <div className="px-6 py-10 pt-16">
-                        <div className="w-32 h-32 bg-sky-200 rounded-full mx-auto mb-4 overflow-hidden">
-                          <Image
-                            src={item.profile_image_url || avatarImage}
-                            alt={item.name}
-                            width={128}
-                            height={128}
-                            className="object-cover"
-                          />
-                        </div>
+                      <div className="px-6 py-10 pt-12">
+                        {item.profile_image_url ? (
+                          <div className="w-32 h-32 bg-sky-200 rounded-full mx-auto mb-4 relative overflow-hidden">
+                            <Image
+                              src={item.profile_image_url}
+                              alt={item.name}
+                              width={128}
+                              height={128}
+                              className="object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-full h-32 flex items-center justify-center mb-4">
+                            <Image
+                              src={logoImg}
+                              alt="Default Logo"
+                              width={128}
+                              height={128}
+                              className="object-contain transform translate-x-3"
+                            />
+                          </div>
+                        )}
                         <h3 className="text-white text-2xl font-bold text-center mb-1 overflow-hidden text-ellipsis whitespace-nowrap">
                           {item.name}
                         </h3>
