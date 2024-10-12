@@ -87,8 +87,6 @@ const MyBalancePage = () => {
     setAiWithEarnings(updatedAIs); // AI 데이터를 earnings와 함께 업데이트
   };
 
-  console.log(aiWithEarnings);
-
   const totalEarnings =
     aiWithEarnings?.reduce((sum, ai) => sum + ai.earnings, 0) || 0;
 
@@ -98,6 +96,7 @@ const MyBalancePage = () => {
         totalBalance={balance}
         totalEarnings={totalEarnings}
         trial={trial}
+        getView={getView}
       />
       <h2 className="text-white text-xl font-semibold mb-4">
         Overview of My Creations

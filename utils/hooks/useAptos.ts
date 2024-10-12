@@ -17,7 +17,7 @@ export const useAptosCall = () => {
   const aptosConfig = new AptosConfig({ network: Network.TESTNET });
   const aptos = new Aptos(aptosConfig);
   const CONTRACT_ADDRESS =
-    "0x36e9f3432b9ec4aa062e23449139a4e23c1eaa2aadf0071ce5114fccbe7b9071";
+    "0xa7c3ee3504ffa6398dd9e5f3e3d31d3b16b237a38e7599c644c68308d95a664d";
   const MODULE = "reward";
 
   const executeTransaction = async (functionName: string, args: any[]) => {
