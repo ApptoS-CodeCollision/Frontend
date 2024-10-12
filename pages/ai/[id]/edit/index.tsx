@@ -1,4 +1,3 @@
-// pages/EditAIPage.tsx
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Plus } from "lucide-react";
@@ -6,6 +5,7 @@ import { useAIModel } from "@/utils/hooks/useAIModel";
 import AIFormField from "@/components/AIFormField";
 import { useUserStore } from "@/store/userStore";
 import { useAptosCall } from "@/utils/hooks/useAptos";
+import { sanitizeAIName, limitContentLength } from "@/utils/lib/makeai";
 
 type CategoryKey =
   | "education"
@@ -33,12 +33,18 @@ const EditAIPage = () => {
   }, [id]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setAIData((prevData) => ({
-      ...prevData,
-      [name]: name === "name" ? value.replace(/\s+/g, "_") : value,
+
+    setAIData((prev) => ({
+      ...prev,
+      [name]:
+        name === "name"
+          ? sanitizeAIName(value)
+          : name === "rag_contents"
+          ? limitContentLength(value)
+          : value,
     }));
   };
 

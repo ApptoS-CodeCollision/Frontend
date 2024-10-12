@@ -5,6 +5,7 @@ import AIFormField from "@/components/AIFormField";
 import { useAIModel } from "@/utils/hooks/useAIModel";
 import { useUserStore } from "@/store/userStore";
 import { useAptosCall } from "@/utils/hooks/useAptos";
+import { sanitizeAIName, limitContentLength } from "@/utils/lib/makeai";
 
 type CategoryKey =
   | "education"
@@ -35,14 +36,15 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
   ) => {
     const { name, value } = e.target;
 
-    const sanitizedValue = value.replace(/\s/g, "_");
-
-    if (sanitizedValue.length > 20) {
-      setNameTooLong(true);
-    } else {
-      setNameTooLong(false);
-      setAIData((prev) => ({ ...prev, [name]: sanitizedValue.slice(0, 20) }));
-    }
+    setAIData((prevData) => ({
+      ...prevData,
+      [name]:
+        name === "name"
+          ? sanitizeAIName(value)
+          : name === "rag_contents"
+          ? limitContentLength(value)
+          : value,
+    }));
   };
 
   const handleCategoryChange = (category: CategoryKey) => {
@@ -161,7 +163,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
               label="Data"
               value={aiData.rag_contents}
               onChange={handleInputChange}
-              placeholder="Provide things to learn"
+              placeholder="Provide things to learn (max 400 characters)"
               name="rag_contents"
               type="textarea"
               rows={3}
