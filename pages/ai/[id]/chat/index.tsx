@@ -16,7 +16,7 @@ const AIChat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useUserStore();
-  const [trial, setTrial] = useState(0);
+  const [trial, setTrial] = useState(10);
   const [balance, setBalance] = useState(1000000);
 
   const { viewTransaction } = useAptosCall();
@@ -36,22 +36,11 @@ const AIChat = () => {
     }
   };
 
-  console.log(balance);
-
   useEffect(() => {
     getView();
+    console.log("trial", trial);
+    console.log("balance", balance);
   }, [messages]);
-
-  useEffect(() => {
-    if (trial === 0) {
-      window.alert("Your Trial is Done!");
-
-      if (balance <= 3000) {
-        window.alert("You don't have enough Balance please Charge");
-        router.push("/mybalance");
-      }
-    }
-  }, []);
 
   const chatId = useMemo(() => {
     if (user && user.user_address && id) {
@@ -102,6 +91,14 @@ const AIChat = () => {
 
   const handleSendMessage = async () => {
     if (!input.trim() || !user?.user_address || !chatId) return;
+    if (trial === 0) {
+      window.alert("Your Trial is Done!");
+      if (balance <= 3000) {
+        window.alert("You don't have enough Balance please Charge");
+        router.push("/mybalance");
+        return;
+      }
+    }
 
     const userMessage: Message = {
       role: "user",
