@@ -30,23 +30,28 @@ const SetProfilePage = () => {
     setIsLoading(true);
     try {
       if (!wallet || !wallet.address) {
-        throw new Error("Wallet address is not available");
+        window.alert("Wallet address is not available");
+        router.push("/");
+        return;
       }
 
-      await executeTransaction("register_user", []);
+      const res = await executeTransaction("register_user", []);
+      if (res) {
+        const userData: User = {
+          user_address: wallet.address,
+          nickname: profileData.nickname, // Add nickname if needed
+          profile_image_url: profileData.selectedProfile,
+          gender: profileData.gender,
+          country: profileData.country,
+          interest: profileData.interest,
+        };
 
-      const userData: User = {
-        user_address: wallet.address,
-        nickname: profileData.nickname, // Add nickname if needed
-        profile_image_url: profileData.selectedProfile,
-        gender: profileData.gender,
-        country: profileData.country,
-        interest: profileData.interest,
-      };
-
-      const result = await addUser(userData);
-      setUser(result);
-      router.push("/explore");
+        const result = await addUser(userData);
+        setUser(result);
+        router.push("/explore");
+      } else {
+        window.alert("Fail to Register User");
+      }
     } catch (error) {
       throw error;
     } finally {
@@ -55,7 +60,7 @@ const SetProfilePage = () => {
   };
 
   return (
-    <div className="max-w-[600px] min-h-screen mx-auto bg-[#1F222A] flex flex-col px-6 text-white">
+    <div className="max-w-[600px] h-screen mx-auto bg-[#1F222A] flex flex-col px-6 text-white py-6">
       <h1 className="text-3xl text-white font-bold mb-4">
         Complete your profile
       </h1>

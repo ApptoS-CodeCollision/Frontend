@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useAptosCall } from "@/utils/hooks/useAptos";
 import { useUserStore } from "@/store/userStore";
 import { collect } from "@/utils/api/user";
+import { decimalconverter } from "@/utils/lib/decimalconverter";
 
 interface AIBalanceCardProps {
   id: string;
@@ -21,24 +22,9 @@ const AIBalanceCard: React.FC<AIBalanceCardProps> = ({
   category,
   imageSrc,
   usage,
+  earnings,
 }) => {
-  const [earnings, setEarnings] = useState(0);
-  const { viewTransaction, executeTransaction } = useAptosCall();
   const { user } = useUserStore();
-  const getInfo = async () => {
-    const res = await viewTransaction("get_ai_collecting_rewards", [
-      user?.user_address,
-      id,
-    ]);
-    if (typeof res === "string") {
-      console.log(res);
-      setEarnings(Number(res));
-    }
-  };
-
-  useEffect(() => {
-    getInfo();
-  }, []);
 
   const handleCollect = async () => {
     if (user?.user_address) {
@@ -90,7 +76,9 @@ const AIBalanceCard: React.FC<AIBalanceCardProps> = ({
         </div>
         <div className="flex-1 flex flex-col items-center justify-center">
           <p className="text-sm text-gray-500">Earnings</p>
-          <p className="text-lg text-white">APT {earnings.toFixed(2)}</p>
+          <p className="text-lg text-white">
+            {earnings ? decimalconverter(earnings) : 0} AS
+          </p>
         </div>
       </div>
     </div>

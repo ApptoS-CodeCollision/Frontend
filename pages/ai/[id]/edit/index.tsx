@@ -192,7 +192,7 @@ const EditAIPage = () => {
       </div>
 
       {/* Update Button */}
-      <div className="fixed bottom-16 left-0 right-0 p-4 bg-black max-w-[600px] mx-auto">
+      <div className="fixed bottom-16 left-0 right-0 p-4 bg-[#181A20] max-w-[600px] mx-auto">
         <button
           className="w-full py-4 rounded-full flex items-center justify-center bg-primary-900 text-white hover:bg-primary-700"
           onClick={handleUpdateAI}

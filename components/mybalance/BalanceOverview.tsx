@@ -3,6 +3,7 @@ import { useUserStore } from "@/store/userStore";
 import { requsetFaucet } from "@/utils/api/user";
 import { useAptosCall } from "@/utils/hooks/useAptos";
 import { Plus } from "lucide-react";
+import { decimalconverter } from "@/utils/lib/decimalconverter";
 
 interface BalanceOverviewProps {
   totalBalance: number;
@@ -19,7 +20,7 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({
   const { executeTransaction } = useAptosCall();
   const handleRequest = async () => {
     if (user?.user_address) {
-      const result = await requsetFaucet(user?.user_address);
+      const result = await executeTransaction("request_faucet", []);
       console.log(result);
     }
   };
@@ -39,21 +40,31 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({
         <div className="flex-1 pr-2">
           <p className="text-[#B9F0DE] text-sm mb-1">My Balance</p>
           <p className="text-white text-2xl font-bold">
-            $ {totalBalance.toLocaleString()}
+            {decimalconverter(totalBalance)} AS
           </p>
         </div>
         <div className="w-px bg-[#B9F0DE] self-stretch mx-2"></div>
         <div className="flex-1 pl-2">
           <p className="text-[#B9F0DE] text-sm mb-1">Earnings</p>
           <p className="text-white text-2xl font-bold">
-            $ {totalEarnings.toLocaleString()}
+            {decimalconverter(totalEarnings)} AS
           </p>
         </div>
       </div>
       {trial == 0 ? (
-        <div className="flex place-content-between">
-          <button onClick={handleRequest}>Requst Faucet!</button>
-          <button onClick={handleCharge}>Charge!</button>
+        <div className="flex place-content-between gap-x-3">
+          <button
+            className="w-1/2 p-2  rounded-full flex items-center justify-center bg-[#2A2D36] hover:bg-primary-700"
+            onClick={handleRequest}
+          >
+            Requst Faucet
+          </button>
+          <button
+            className="w-1/2 p-2 rounded-full flex items-center justify-center bg-[#2A2D36] hover:bg-primary-700"
+            onClick={handleCharge}
+          >
+            Charge AS
+          </button>
         </div>
       ) : (
         <p>Free Trial : {trial} Left</p>
