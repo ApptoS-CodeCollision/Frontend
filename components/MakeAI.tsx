@@ -27,12 +27,13 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [nameTooLong, setNameTooLong] = useState(false);
-  const { aiData, setAIData, handleCreate, loading } = useAIModel();
+  const { aiData, setAIData, handleCreate } = useAIModel();
   const { user } = useUserStore();
   const { executeTransaction } = useAptosCall();
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
 
@@ -71,6 +72,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
 
   const handleCreateAI = async () => {
     if (isFormValid) {
+      setLoading(true);
       const res: any = await executeTransaction("register_ai", [
         user?.user_address + "_" + aiData.name,
         aiData.rag_contents,
@@ -83,10 +85,12 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
           tx_hash: res.hash,
         };
         await handleCreate(createData);
+        setLoading(false);
         onAICreated(); // Trigger parent callback after AI is created
         setOpen(false); // Close the sheet
       } else {
         window.alert("Fail to Create AI");
+        setLoading(false);
         onAICreated(); // Trigger parent callback after AI is created
         setOpen(false); // Close the sheet
       }
@@ -178,7 +182,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
           </div>
           <div className="p-4">
             <button
-              className={`w-full py-4 rounded-full flex items-center justify-center transition-colors duration-200 ${
+              className={`w-full py-4 rounded-full flex items-center justify-center transition-colors duration-200 disabled:bg-gray-600 ${
                 isFormValid
                   ? "bg-primary-900 text-white hover:bg-primary-700"
                   : "bg-primary-900 bg-opacity-20 text-primary-900 cursor-not-allowed"

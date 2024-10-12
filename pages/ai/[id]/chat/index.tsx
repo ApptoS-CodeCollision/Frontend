@@ -132,8 +132,8 @@ const AIChat = () => {
   };
 
   return (
-    <div className="flex flex-col h-full text-white">
-      <div className="flex-grow overflow-y-auto space-y-4 pb-32">
+    <div className="flex flex-col h-full text-white ">
+      <div className="flex-grow overflow-y-auto space-y-4 pb-32 scrollbar-hide">
         {messages.map((message, index) => (
           <div
             key={index}

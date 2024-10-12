@@ -25,20 +25,22 @@ const AIBalanceCard: React.FC<AIBalanceCardProps> = ({
   earnings,
 }) => {
   const { user } = useUserStore();
+  const [loading, setLoading] = useState(false);
 
   const handleCollect = async () => {
     if (user?.user_address) {
+      setLoading(true);
       const userData = {
         user_address: user?.user_address,
         ai_id: id,
       };
       await collect(userData);
+      setLoading(false);
+      window.alert("Collect Success!");
     } else {
       window.alert("User Not Found");
     }
   };
-
-  console.log(earnings);
 
   return (
     <div className="bg-[#2A2D36] rounded-xl p-4 mb-4">
@@ -63,10 +65,12 @@ const AIBalanceCard: React.FC<AIBalanceCardProps> = ({
           </div>
         </div>
         <button
-          className="text-primary-900 font-medium flex-shrink-0"
+          className={`font-medium flex-shrink-0 ${
+            loading ? "text-white cursor-not-allowed" : "text-primary-900"
+          }`}
           onClick={handleCollect}
         >
-          Collect
+          {loading ? "Collecting..." : "Collect"}
         </button>
       </div>
       <div className="flex mt-4 divide-x divide-gray-300">
@@ -77,7 +81,7 @@ const AIBalanceCard: React.FC<AIBalanceCardProps> = ({
         <div className="flex-1 flex flex-col items-center justify-center">
           <p className="text-sm text-gray-500">Earnings</p>
           <p className="text-lg text-white">
-            {earnings ? decimalconverter(earnings) : 0} kOcta
+            {earnings ? decimalconverter(earnings) : 0} APT
           </p>
         </div>
       </div>
