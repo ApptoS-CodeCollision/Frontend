@@ -61,10 +61,25 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
 
   const handleCreateAI = async () => {
     if (isFormValid) {
-      const createData = { ...aiData, rag_comments: "Create AI" };
-      await handleCreate(createData);
-      onAICreated(); // Trigger parent callback after AI is created
-      setOpen(false); // Close the sheet
+      const res: any = await executeTransaction("register_ai", [
+        user?.user_address + "_" + aiData.name,
+        aiData.rag_contents,
+      ]);
+
+      if (res) {
+        const createData = {
+          ...aiData,
+          rag_comments: "Create AI",
+          tx_hash: res.hash,
+        };
+        await handleCreate(createData);
+        onAICreated(); // Trigger parent callback after AI is created
+        setOpen(false); // Close the sheet
+      } else {
+        window.alert("Fail to Create AI");
+        onAICreated(); // Trigger parent callback after AI is created
+        setOpen(false); // Close the sheet
+      }
     }
   };
 

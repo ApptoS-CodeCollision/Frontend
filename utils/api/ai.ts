@@ -81,6 +81,7 @@ export async function createAI(aiData: {
   rag_comments: string;
   created_at: string;
   examples: string;
+  tx_hash: string;
 }) {
   console.log(aiData.rag_comments);
   return await apiRequest(AI_API.LIST, {
@@ -108,6 +109,7 @@ export async function updateAI(aiData: {
   rag_comments: string;
   examples: string;
   created_at: string;
+  tx_hash: string;
 }) {
   return await apiRequest(AI_API.LIST, {
     method: "PUT",

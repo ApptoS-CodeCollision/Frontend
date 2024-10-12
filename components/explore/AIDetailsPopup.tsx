@@ -119,6 +119,7 @@ const AIDetailsPopup: React.FC<AIDetailsPropWithName> = ({
 
 // RAG 정보를 표시하는 컴포넌트를 별도로 추출
 const RagItem: React.FC<{ rag: any }> = ({ rag }) => {
+  console.log(rag);
   return (
     <div className="bg-[#1F222A] p-3 rounded-lg">
       <div className="flex justify-between items-start">
@@ -129,7 +130,7 @@ const RagItem: React.FC<{ rag: any }> = ({ rag }) => {
       </div>
       <a
         className="text-[#00D897] text-xs break-all hover:underline mt-1 block"
-        href={txScanURL(rag.tx_url)}
+        href={txScanURL(rag.tx_hash)}
         target="_blank"
         rel="noopener noreferrer"
       >

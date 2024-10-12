@@ -18,7 +18,7 @@ const SetProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { wallet, setUser } = useUserStore();
-  const { executeTransaction, loading, error, result } = useAptosCall();
+  const { executeTransaction } = useAptosCall();
 
   const handleSubmit = async (profileData: {
     nickname: string;

@@ -1,8 +1,13 @@
 // components/AIBalanceCard.tsx
 import Image from "next/image";
 import avatarImage from "@/assets/avatar.png";
+import { useEffect, useState } from "react";
+import { useAptosCall } from "@/utils/hooks/useAptos";
+import { useUserStore } from "@/store/userStore";
+import { collect } from "@/utils/api/user";
 
 interface AIBalanceCardProps {
+  id: string;
   name: string;
   category: string;
   imageSrc?: string;
@@ -11,12 +16,44 @@ interface AIBalanceCardProps {
 }
 
 const AIBalanceCard: React.FC<AIBalanceCardProps> = ({
+  id,
   name,
   category,
   imageSrc,
   usage,
-  earnings,
 }) => {
+  const [earnings, setEarnings] = useState(0);
+  const { viewTransaction, executeTransaction } = useAptosCall();
+  const { user } = useUserStore();
+  const getInfo = async () => {
+    const res = await viewTransaction("get_ai_collecting_rewards", [
+      user?.user_address,
+      id,
+    ]);
+    if (typeof res === "string") {
+      console.log(res);
+      setEarnings(Number(res));
+    }
+  };
+
+  useEffect(() => {
+    getInfo();
+  }, []);
+
+  const handleCollect = async () => {
+    if (user?.user_address) {
+      const userData = {
+        user_address: user?.user_address,
+        ai_id: id,
+      };
+      await collect(userData);
+    } else {
+      window.alert("User Not Found");
+    }
+  };
+
+  console.log(earnings);
+
   return (
     <div className="bg-[#2A2D36] rounded-xl p-4 mb-4">
       <div className="flex items-center justify-between mb-4">
@@ -39,7 +76,10 @@ const AIBalanceCard: React.FC<AIBalanceCardProps> = ({
             </div>
           </div>
         </div>
-        <button className="text-primary-900 font-medium flex-shrink-0">
+        <button
+          className="text-primary-900 font-medium flex-shrink-0"
+          onClick={handleCollect}
+        >
           Collect
         </button>
       </div>
@@ -50,7 +90,7 @@ const AIBalanceCard: React.FC<AIBalanceCardProps> = ({
         </div>
         <div className="flex-1 flex flex-col items-center justify-center">
           <p className="text-sm text-gray-500">Earnings</p>
-          <p className="text-lg text-white">$ {earnings.toFixed(2)}</p>
+          <p className="text-lg text-white">APT {earnings.toFixed(2)}</p>
         </div>
       </div>
     </div>
