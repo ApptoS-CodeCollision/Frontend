@@ -43,14 +43,14 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({
         <div className="flex-1 pr-2">
           <p className="text-[#B9F0DE] text-sm mb-1">My Balance</p>
           <p className="text-white text-2xl font-bold">
-            {decimalconverter(totalBalance)} kOcta
+            {decimalconverter(totalBalance)} APT
           </p>
         </div>
         <div className="w-px bg-[#B9F0DE] self-stretch mx-2"></div>
         <div className="flex-1 pl-2">
           <p className="text-[#B9F0DE] text-sm mb-1">Earnings</p>
           <p className="text-white text-2xl font-bold">
-            {decimalconverter(totalEarnings)} kOcta
+            {decimalconverter(totalEarnings)} APT
           </p>
         </div>
       </div>

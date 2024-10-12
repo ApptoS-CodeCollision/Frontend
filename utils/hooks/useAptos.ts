@@ -8,6 +8,7 @@ import {
   InputViewFunctionData,
 } from "@aptos-labs/ts-sdk";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export const useAptosCall = () => {
@@ -19,10 +20,14 @@ export const useAptosCall = () => {
   const CONTRACT_ADDRESS =
     "0xa7c3ee3504ffa6398dd9e5f3e3d31d3b16b237a38e7599c644c68308d95a664d";
   const MODULE = "reward";
+  const router = useRouter();
 
   const executeTransaction = async (functionName: string, args: any[]) => {
     if (!account) {
-      console.log("Wallet account is not available");
+      window.alert(
+        "Wallet account is not available. Please Connect wallet Again"
+      );
+      router.push("/");
       return;
     }
 

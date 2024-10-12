@@ -49,6 +49,16 @@ export default function Landing() {
             <div className="flex-grow border-t border-gray-400"></div>
           </div>
           <WalletSelector />
+          <div className="text-center">
+            If you haven&apos;t received the faucet yet, <br /> please visit our
+            website after receiving it. <br />
+            <a
+              href="https://www.aptosfaucet.com/"
+              className="w-full m-auto text-center font-bold leading-4"
+            >
+              https://www.aptosfaucet.com
+            </a>
+          </div>
         </div>
       </div>
     </div>
