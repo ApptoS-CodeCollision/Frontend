@@ -6,6 +6,7 @@ import { Send } from "lucide-react";
 import Logo from "@/assets/logo_apptos.svg";
 import { useUserStore } from "@/store/userStore";
 import { fetchAIDetails } from "@/utils/api/ai";
+import { useAptosCall } from "@/utils/hooks/useAptos";
 
 const AIChat = () => {
   const router = useRouter();
@@ -15,6 +16,42 @@ const AIChat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useUserStore();
+  const [trial, setTrial] = useState(0);
+  const [balance, setBalance] = useState(1000000);
+
+  const { viewTransaction } = useAptosCall();
+
+  const getView = async () => {
+    const trial = await viewTransaction("get_free_trial_count", [
+      user?.user_address,
+    ]);
+    if (typeof trial === "string") {
+      setTrial(Number(trial));
+    }
+    const bal = await viewTransaction("get_consumer_balance", [
+      user?.user_address,
+    ]);
+    if (typeof bal === "string") {
+      setBalance(Number(bal));
+    }
+  };
+
+  console.log(balance);
+
+  useEffect(() => {
+    getView();
+  }, [messages]);
+
+  useEffect(() => {
+    if (trial === 0) {
+      window.alert("Your Trial is Done!");
+
+      if (balance <= 3000) {
+        window.alert("You don't have enough Balance please Charge");
+        router.push("/mybalance");
+      }
+    }
+  }, []);
 
   const chatId = useMemo(() => {
     if (user && user.user_address && id) {
