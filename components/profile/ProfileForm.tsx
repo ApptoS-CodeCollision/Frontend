@@ -142,7 +142,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             id="interest"
             value={interest}
             onChange={(e) => setInterest(e.target.value)}
-            className="flex-1 p-2 border-b border-gray-600 focus:border-primary-900 focus:outline-none bg-transparent text-white"
+            className="w-full p-2 border-b border-gray-600 focus:border-primary-900 focus:outline-none bg-transparent text-white"
             placeholder="Education, Fitness, Blockchain etc..."
           />
         </div>

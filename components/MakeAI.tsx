@@ -1,4 +1,3 @@
-// components/CreateCustomAISheet.tsx
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Plus } from "lucide-react";
@@ -26,15 +25,24 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [nameTooLong, setNameTooLong] = useState(false);
   const { aiData, setAIData, handleCreate, loading } = useAIModel();
   const { user } = useUserStore();
   const { executeTransaction } = useAptosCall();
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setAIData((prev) => ({ ...prev, [name]: value }));
+
+    const sanitizedValue = value.replace(/\s/g, "_");
+
+    if (sanitizedValue.length > 20) {
+      setNameTooLong(true);
+    } else {
+      setNameTooLong(false);
+      setAIData((prev) => ({ ...prev, [name]: sanitizedValue.slice(0, 20) }));
+    }
   };
 
   const handleCategoryChange = (category: CategoryKey) => {
@@ -102,13 +110,20 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
             </h2>
           </div>
           <div className="flex-grow overflow-y-auto p-4 space-y-6">
-            <AIFormField
-              label="AI Name"
-              value={aiData.name}
-              onChange={handleInputChange}
-              placeholder="Name your AI (max 18 characters)"
-              name="name"
-            />
+            <div>
+              <AIFormField
+                label="AI Name"
+                value={aiData.name}
+                onChange={handleInputChange}
+                placeholder="Name your AI (max 20 characters)"
+                name="name"
+              />
+              {nameTooLong && (
+                <p className="text-red-500 text-sm mt-2">
+                  AI Name cannot exceed 20 characters.
+                </p>
+              )}
+            </div>
             <div className="space-y-2">
               <p className="text-sm font-medium">Category</p>
               <div className="flex flex-wrap gap-2">
