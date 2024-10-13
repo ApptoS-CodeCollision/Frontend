@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Plus } from "lucide-react";
 import { useAIModel } from "@/utils/hooks/useAIModel";
@@ -23,8 +23,11 @@ const EditAIPage = () => {
   const { user } = useUserStore();
   const { executeTransaction } = useAptosCall();
 
-  const { aiData, setAIData, loadAIData, handleUpdate, loading, error } =
-    useAIModel(id as string);
+  const { aiData, setAIData, loadAIData, handleUpdate, error } = useAIModel(
+    id as string
+  );
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -33,7 +36,7 @@ const EditAIPage = () => {
   }, [id]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
 
@@ -64,6 +67,7 @@ const EditAIPage = () => {
   ];
 
   const handleUpdateAI = async () => {
+    setLoading(true);
     const res: any = await executeTransaction("store_rag_data", [
       user?.user_address + "_" + aiData.name,
       aiData.rag_contents,
@@ -79,11 +83,8 @@ const EditAIPage = () => {
     } else {
       window.alert("Fail to Update AI");
     }
+    setLoading(false);
   };
-
-  if (loading) {
-    return <div>Loading AI data...</div>;
-  }
 
   if (error) {
     return <div className="text-red-500">{error}</div>;
@@ -194,7 +195,7 @@ const EditAIPage = () => {
       {/* Update Button */}
       <div className="fixed bottom-16 left-0 right-0 p-4 bg-[#181A20] max-w-[600px] mx-auto">
         <button
-          className="w-full py-4 rounded-full flex items-center justify-center bg-primary-900 text-white hover:bg-primary-700"
+          className="w-full py-4 rounded-full flex items-center justify-center bg-primary-900 text-white hover:bg-primary-700 disabled:bg-gray-600"
           onClick={handleUpdateAI}
           disabled={loading}
         >

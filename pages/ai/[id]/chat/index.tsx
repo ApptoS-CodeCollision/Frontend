@@ -20,7 +20,10 @@ const AIChat = () => {
   const [trial, setTrial] = useState(10);
   const [balance, setBalance] = useState(1000000);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState({ title: "", message: "" });
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    message: "",
+  });
 
   const { viewTransaction } = useAptosCall();
 
@@ -94,22 +97,16 @@ const AIChat = () => {
 
   const handleSendMessage = async () => {
     if (!input.trim() || !user?.user_address || !chatId) return;
-    if (trial === 0) {
-      setModalContent({
-        title: "Your 5 faucet trial has ended",
-        message: "You don't have enough Trial. \nPlease Charge.",
-      });
-      setIsModalOpen(true);
-      if (balance <= 3000) {
-        setTimeout(() => {
+    if (trial === 0 && balance <= 10000) {
+      setTimeout(() => {
         setModalContent({
           title: "Your balance is insufficient",
-          message: "You don't have enough Balance. \nPlease Charge.",
+          message:
+            "You don't have enough Balance. \nPlease Charge or Request Faucet.",
         });
         setIsModalOpen(true);
       }, 3000);
-        return;
-      }
+      return;
     }
 
     const userMessage: Message = {
