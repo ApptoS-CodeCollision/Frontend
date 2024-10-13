@@ -13,13 +13,16 @@ async function apiRequest(
     );
     throw new Error(`Network response was not ok: ${response.statusText}`);
   }
-  return await response.json();
+  const responseJson = await response.json()
+  console.log('response', responseJson)
+  return responseJson
+  // return await response.json();
 }
 
 // API URL 상수화
-const AI_API = {
+export const AI_API = {
   TREND: (address: string, category: string) =>
-    `/ais/trend/${address}/${category}`,
+    `${API_BASE_URL}/ais/trend/${address}/${category}`,
   LIST: "/ais/",
   TODAY: (address: string) => `/ais/today/${address}`,
   DETAILS: (id: string) => `/ais/id/${id}`,
@@ -30,6 +33,13 @@ const AI_API = {
 };
 
 // API 요청 함수들
+export async function fetchers(url: string): Promise<any> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
 
 export async function fetchTrendingAIs(
   category: string,

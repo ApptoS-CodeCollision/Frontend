@@ -4,7 +4,7 @@ import CategorySelector, {
   categories,
 } from "@/components/explore/CategorySelector";
 import TodaySection from "@/components/explore/TodaySection";
-import RecentSection from "@/components/explore/RecentSection";
+import TrendSection from "@/components/explore/TrendSection";
 import { useUserStore } from "@/store/userStore";
 import { useLoadAIModels } from "@/utils/hooks/useLoadAIModels";
 
@@ -43,9 +43,9 @@ export default function ExplorePage() {
           refreshData={loadAIModels}
         />
       )}
-      <RecentSection
+      <TrendSection
         title={selectedCategory === "all" ? "Weekly Trends" : selectedCategory}
-        trendCards={trendCards}
+        selectedCategory={selectedCategory}
         refreshData={loadAIModels}
       />
     </div>
