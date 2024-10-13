@@ -77,13 +77,13 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
       const isAIAlreadyRegisterInBlockchain = await viewTransaction("contain_ai", [user?.user_address, ai_id])
       const res: any = (async ()=>{
         if (isAIAlreadyRegisterInBlockchain) {
-          const res: any = await executeTransaction("register_ai", [
+          const res: any = await executeTransaction("update_ai", [
             ai_id ,
             aiData.rag_contents,
           ]);
           return res;
         } else {
-          const res: any = await executeTransaction("update_ai", [
+          const res: any = await executeTransaction("register_ai", [
             ai_id ,
             aiData.rag_contents,
           ]);
