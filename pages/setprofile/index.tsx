@@ -17,7 +17,9 @@ import {
 const SetProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { wallet, setUser } = useUserStore();
+  // const { wallet, setUser } = useUserStore();
+  const { setUser } = useUserStore();
+  const { account } = useWallet();
   const { executeTransaction } = useAptosCall();
 
   const handleSubmit = async (profileData: {
@@ -29,7 +31,7 @@ const SetProfilePage = () => {
   }) => {
     setIsLoading(true);
     try {
-      if (!wallet || !wallet.address) {
+      if (!account || !account.address) {
         window.alert("Wallet address is not available");
         router.push("/");
         return;
@@ -38,7 +40,7 @@ const SetProfilePage = () => {
       const res = await executeTransaction("register_user", []);
       if (res) {
         const userData: User = {
-          user_address: wallet.address,
+          user_address: account.address,
           nickname: profileData.nickname, // Add nickname if needed
           profile_image_url: profileData.selectedProfile,
           gender: profileData.gender,
