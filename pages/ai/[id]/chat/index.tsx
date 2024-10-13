@@ -7,6 +7,7 @@ import Logo from "@/assets/logo_apptos.svg";
 import { useUserStore } from "@/store/userStore";
 import { fetchAIDetails } from "@/utils/api/ai";
 import { useAptosCall } from "@/utils/hooks/useAptos";
+import Modal from "@/components/chat/AlertModal";
 
 const AIChat = () => {
   const router = useRouter();
@@ -18,6 +19,8 @@ const AIChat = () => {
   const { user } = useUserStore();
   const [trial, setTrial] = useState(10);
   const [balance, setBalance] = useState(1000000);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
   const { viewTransaction } = useAptosCall();
 
@@ -92,10 +95,19 @@ const AIChat = () => {
   const handleSendMessage = async () => {
     if (!input.trim() || !user?.user_address || !chatId) return;
     if (trial === 0) {
-      window.alert("Your Trial is Done!");
+      setModalContent({
+        title: "Your 5 faucet trial has ended",
+        message: "You don't have enough Trial. \nPlease Charge.",
+      });
+      setIsModalOpen(true);
       if (balance <= 3000) {
-        window.alert("You don't have enough Balance please Charge");
-        router.push("/mybalance");
+        setTimeout(() => {
+        setModalContent({
+          title: "Your balance is insufficient",
+          message: "You don't have enough Balance. \nPlease Charge.",
+        });
+        setIsModalOpen(true);
+      }, 3000);
         return;
       }
     }
@@ -203,6 +215,13 @@ const AIChat = () => {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={modalContent.title}
+        message={modalContent.message}
+        onConfirm={() => router.push("/mybalance")}
+      />
     </div>
   );
 };
