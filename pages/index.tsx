@@ -32,11 +32,11 @@ export default function Landing() {
             AppToS 👋
           </div>
           <div className="text-primary-900 text-center">
-            Sell, Socialize, Satisfy your needs
+            Share, Socialize, Satisfy your needs
           </div>
         </div>
         <Link
-          href="https://apptosblockblock.gitbook.io/apptos"
+          href="https://blockblock.gitbook.io/aptos/"
           target="_blank"
           className="w-full mb-6 bg-primary-900 text-white font-semibold py-4 rounded-full shadow-md hover:bg-primary-100 transition duration-300 ease-in-out flex items-center justify-center"
         >
