@@ -7,27 +7,24 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
 import logoImg from "@/assets/taillogo.png";
-import { useUserStore } from "@/store/userStore";
 import { Heart, ArrowRight } from "lucide-react";
 import { useRouter } from "next/router";
 import { useLikeHandler } from "@/utils/hooks/useLikeHandler";
 import { sliderSettings } from "@/utils/lib/sliderSettings";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface TodaySectionProps {
   isLoading: boolean;
   todayCards: CardData[] | null;
-  setSelectedAI: (ai: CardData | null) => void;
   refreshData: () => void;
 }
 
 const TodaySection: React.FC<TodaySectionProps> = ({
   isLoading,
   todayCards,
-  setSelectedAI,
   refreshData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useUserStore();
   const router = useRouter();
   const [showArrows, setShowArrows] = useState(false);
   const { handleLikeClick } = useLikeHandler(refreshData);
@@ -74,7 +71,6 @@ const TodaySection: React.FC<TodaySectionProps> = ({
               <Dialog
                 onOpenChange={(open) => {
                   setIsOpen(open);
-                  setSelectedAI(open ? item : null);
                 }}
               >
                 <DialogTrigger asChild>
@@ -138,6 +134,7 @@ const TodaySection: React.FC<TodaySectionProps> = ({
                 </DialogTrigger>
                 {isOpen && (
                   <DialogContent>
+                    <DialogTitle />
                     <AIDetailsPopup ai_detail={item} />
                   </DialogContent>
                 )}

@@ -3,28 +3,20 @@ import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import Card from "./Card";
 import AIDetailsPopup from "./AIDetailsPopup";
 import { CardData } from "@/utils/interface";
-import { useRouter } from "next/router";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface RecentSectionProps {
   title: string;
   trendCards: CardData[] | null;
-  setSelectedAI: (ai: CardData | null) => void;
   refreshData: () => void;
 }
 
 const RecentSection: React.FC<RecentSectionProps> = ({
   title,
   trendCards,
-  setSelectedAI,
   refreshData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-
-  const handleChatClick = (e: React.MouseEvent, item: CardData) => {
-    e.stopPropagation();
-    router.push(`/ai/${item.id}/chat`);
-  };
 
   return (
     <section className="mb-6">
@@ -35,7 +27,6 @@ const RecentSection: React.FC<RecentSectionProps> = ({
             <Dialog
               onOpenChange={(open) => {
                 setIsOpen(open);
-                setSelectedAI(open ? item : null);
               }}
             >
               <DialogTrigger asChild>
@@ -52,6 +43,7 @@ const RecentSection: React.FC<RecentSectionProps> = ({
 
               {isOpen && (
                 <DialogContent>
+                  <DialogTitle />
                   <AIDetailsPopup ai_detail={item} />
                 </DialogContent>
               )}

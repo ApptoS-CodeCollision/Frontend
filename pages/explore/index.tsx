@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { fetchTodayAIs, fetchTrendingAIs } from "@/utils/api/ai";
-import { CardData } from "@/utils/interface";
 import CategorySelector, {
   CategoryKey,
   categories,
@@ -12,7 +10,6 @@ import { useLoadAIModels } from "@/utils/hooks/useLoadAIModels";
 
 export default function ExplorePage() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("all");
-  const [selectedAI, setSelectedAI] = useState<CardData | null>(null);
   const { user } = useUserStore();
 
   // 'explore' 모드로 설정하여 데이터 로드
@@ -43,14 +40,12 @@ export default function ExplorePage() {
         <TodaySection
           isLoading={isLoading}
           todayCards={todayCards}
-          setSelectedAI={setSelectedAI}
           refreshData={loadAIModels}
         />
       )}
       <RecentSection
         title={selectedCategory === "all" ? "Weekly Trends" : selectedCategory}
         trendCards={trendCards}
-        setSelectedAI={setSelectedAI}
         refreshData={loadAIModels}
       />
     </div>
