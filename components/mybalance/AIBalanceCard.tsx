@@ -1,8 +1,7 @@
 // components/AIBalanceCard.tsx
 import Image from "next/image";
-import avatarImage from "@/assets/avatar.png";
+import logoImg from "@/assets/taillogo.png";
 import { useEffect, useState } from "react";
-import { useAptosCall } from "@/utils/hooks/useAptos";
 import { useUserStore } from "@/store/userStore";
 import { collect } from "@/utils/api/user";
 import { decimalconverter } from "@/utils/lib/decimalconverter";
@@ -46,13 +45,23 @@ const AIBalanceCard: React.FC<AIBalanceCardProps> = ({
     <div className="bg-[#2A2D36] rounded-xl p-4 mb-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center flex-grow mr-4">
-          <Image
-            src={imageSrc || avatarImage}
-            alt={name}
-            width={48}
-            height={48}
-            className="rounded-full mr-3 flex-shrink-0"
-          />
+          {imageSrc ? (
+            <Image
+              src={imageSrc}
+              alt={name}
+              width={48}
+              height={48}
+              className="rounded-full mr-3 flex-shrink-0"
+            />
+          ) : (
+            <div className="w-[50px] h-[50px] flex items-center justify-center mr-3">
+              <Image
+                src={logoImg}
+                alt="Default Logo"
+                className="object-contain"
+              />
+            </div>
+          )}
           <div className="flex flex-col min-w-0">
             <h3 className="text-lg text-white font-semibold truncate max-w-[150px]">
               {name}
