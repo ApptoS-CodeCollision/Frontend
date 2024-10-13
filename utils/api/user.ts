@@ -35,7 +35,7 @@ const USER_API = {
 };
 
 // 사용자 추가
-export async function addUser(userData: {
+export async function registerUser(userData: {
   user_address: string;
   nickname: string;
   profile_image_url?: string;
@@ -85,7 +85,7 @@ export async function updateUser(userData: {
   gender?: string;
   country?: string;
   interest?: string;
-  trial?: number;
+  // trial?: number;
 }) {
   return await apiRequest(USER_API.ADD, {
     method: "PUT",
@@ -96,7 +96,7 @@ export async function updateUser(userData: {
       gender: userData.gender || "",
       country: userData.country || "",
       interest: userData.interest || "",
-      trial: userData.trial || 0,
+      // trial: userData.trial || 0,
     }),
   });
 }

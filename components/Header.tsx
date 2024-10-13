@@ -5,6 +5,7 @@ import { HeaderBarProps } from "@/utils/interface";
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useWallet, } from "@aptos-labs/wallet-adapter-react";
 
 interface ExtendedHeaderBarProps extends HeaderBarProps {
   onToggleSidebar?: () => void;
@@ -17,10 +18,12 @@ const Header: React.FC<ExtendedHeaderBarProps> = ({
   const user = useUserStore((state) => state.user);
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
+  const { account, connected } = useWallet();
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    console.log("account", account)
+  }, [connected]);
 
   const isAIChat = /^\/ai\/[^/]+\/chat/.test(router.asPath);
   const isMyPage = router.asPath === "/mypage" || isAIChat;
