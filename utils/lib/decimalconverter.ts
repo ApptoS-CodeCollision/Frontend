@@ -1,3 +1,3 @@
 export function decimalconverter(aptos: number) {
-  return (aptos / 100000000).toFixed(3);
+  return (aptos / 1000000).toFixed(3);
 }

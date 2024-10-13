@@ -18,7 +18,7 @@ export const useAptosCall = () => {
   const aptosConfig = new AptosConfig({ network: Network.TESTNET });
   const aptos = new Aptos(aptosConfig);
   const CONTRACT_ADDRESS =
-    "0xa7c3ee3504ffa6398dd9e5f3e3d31d3b16b237a38e7599c644c68308d95a664d";
+    "0x168359b8cfa3e2dcf8e8346cde746b79f01931320b4931a51626d55aaff71173";
   const MODULE = "reward";
   const router = useRouter();
 
