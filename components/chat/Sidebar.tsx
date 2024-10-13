@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { fetchLikeList } from "@/utils/api/user";
 import { fetchUserChats } from "@/utils/api/chat";
 import { useUserStore } from "@/store/userStore";
-import avatarIcon from "@/assets/avatar.png";
+import logoImg from "@/assets/taillogo.png";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -39,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           const formattedLikes = likeData?.ais?.map((like: any) => ({
             id: like.id,
             name: like.name,
-            imageUrl: like.profile_img_url || { avatarIcon },
+            imageUrl: like.profile_img_url || { logoImg },
             creator: like.creator,
           }));
           setSavedAIs(formattedLikes || []);
@@ -48,7 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           const formattedChats = chatData?.chats?.map((chat: any) => ({
             id: chat.ai.id,
             name: chat.ai.name,
-            imageUrl: chat.ai.profile_img_url || { avatarIcon },
+            imageUrl: chat.ai.profile_img_url || { logoImg },
             creator: chat.creator,
           }));
           setAiHistory(formattedChats || []);
@@ -72,12 +72,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         className="flex items-center space-x-3 py-2 cursor-pointer hover:bg-[#2A2D36] rounded-lg px-2 transition-colors duration-200"
         onClick={() => router.push(`/ai/${item.id}/chat`)}
       >
-        <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+        <div className="size-12 rounded-full overflow-hidden flex-shrink-0">
           <Image
-            src={avatarIcon}
+            src={logoImg}
             alt={item.name}
-            width={40}
-            height={40}
             className="object-cover"
           />
         </div>
