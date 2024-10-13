@@ -1,64 +1,6 @@
-import { useState } from "react";
-import { useRouter } from "next/router";
 import ProfileForm from "@/components/profile/ProfileForm";
-import { addUser } from "@/utils/api/user";
-import { useUserStore } from "@/store/userStore";
-import { User } from "@/utils/interface";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { useAptosCall } from "@/utils/hooks/useAptos";
-import {
-  Aptos,
-  AptosConfig,
-  Network,
-  Account,
-  Ed25519PrivateKey,
-} from "@aptos-labs/ts-sdk";
 
 const SetProfilePage = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-  const { wallet, setUser } = useUserStore();
-  const { executeTransaction } = useAptosCall();
-
-  const handleSubmit = async (profileData: {
-    nickname: string;
-    selectedProfile: string;
-    gender: string;
-    country: string;
-    interest: string;
-  }) => {
-    setIsLoading(true);
-    try {
-      if (!wallet || !wallet.address) {
-        window.alert("Wallet address is not available");
-        router.push("/");
-        return;
-      }
-
-      const res = await executeTransaction("register_user", []);
-      if (res) {
-        const userData: User = {
-          user_address: wallet.address,
-          nickname: profileData.nickname, // Add nickname if needed
-          profile_image_url: profileData.selectedProfile,
-          gender: profileData.gender,
-          country: profileData.country,
-          interest: profileData.interest,
-        };
-
-        const result = await addUser(userData);
-        setUser(result);
-        router.push("/explore");
-      } else {
-        window.alert("Fail to Register User");
-      }
-    } catch (error) {
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="max-w-[600px] h-screen mx-auto bg-[#1F222A] flex flex-col px-6 text-white py-6">
       <h1 className="text-3xl text-white font-bold mb-4">
@@ -66,11 +8,7 @@ const SetProfilePage = () => {
       </h1>
       <p className="text-lg text-gray-400 mb-8">Select a profile picture!</p>
 
-      <ProfileForm
-        onSubmit={handleSubmit}
-        isLoading={isLoading}
-        submitText="Create Account"
-      />
+      <ProfileForm mode="setMode" />
     </div>
   );
 };

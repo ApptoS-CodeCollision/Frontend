@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Logo from "@/assets/logo_apptos.svg";
+import Logo from "@/assets/apptos.svg";
 import { WalletSelector } from "@/components/wallet/WalletSelector";
 import { useUserStore } from "@/store/userStore";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
@@ -24,8 +24,7 @@ export default function Landing() {
   return (
     <div className="h-screen flex items-center justify-center">
       <div className="max-w-[600px] w-full mx-auto px-6">
-        <Logo className="mx-auto mb-10 relative left-4" />
-
+        <Logo className="mx-auto" />
         <div className="w-full flex flex-col items-center mb-12">
           <div className="font-semibold text-4xl pb-3">Welcome to</div>
           <div className="font-semibold text-4xl pb-4 text-primary-900">

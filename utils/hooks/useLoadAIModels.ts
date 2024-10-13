@@ -12,7 +12,7 @@ export const useLoadAIModels = (
   mode: "search" | "explore" | "myAI", // 다양한 모드를 처리할 수 있도록 구성
   user_address: string | undefined,
   selectedCategory: string = "", // 카테고리는 explore에서만 사용
-  query: string = "" // 검색어는 search에서만 사용
+  query: string = "", // 검색어는 search에서만 사용
 ) => {
   const [cards, setCards] = useState<CardData[] | null>(null);
   const [todayCards, setTodayCards] = useState<CardData[] | null>(null);
@@ -34,13 +34,13 @@ export const useLoadAIModels = (
           const trendData = await fetchTrendingAIs(
             selectedCategory,
             user_address,
-            { offset: 0, limit: 10 }
+            { offset: 0, limit: 10 },
           );
           setTrendCards(
             trendData.ais.sort(
               (a: CardData, b: CardData) =>
-                b.daily_user_access - a.daily_user_access
-            )
+                b.daily_user_access - a.daily_user_access,
+            ),
           );
           break;
 
@@ -49,7 +49,7 @@ export const useLoadAIModels = (
             const searchData = await fetchSearchAIs(query, user_address || "");
             setCards(searchData.ais);
           } else {
-            const searchData = await fetchAIs(0, 10);
+            const searchData = await fetchAIs(0, 50);
             setCards(searchData.ais);
           }
 

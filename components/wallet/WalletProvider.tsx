@@ -8,6 +8,7 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <AptosWalletAdapterProvider
+      autoConnect={true}
       dappConfig={{
         network: Network.TESTNET,
         aptosApiKey: process.env.NEXT_PUBLIC_APTOS_API_KEY,
