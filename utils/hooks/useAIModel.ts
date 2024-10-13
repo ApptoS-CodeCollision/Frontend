@@ -53,7 +53,7 @@ export const useAIModel = (aiId?: string) => {
     const newAI = {
       ...formData,
       creator_address: user.user_address,
-      created_at: '2024-10-13 10:00:00.000',
+      created_at: new Date().toISOString(),
     };
 
     try {
