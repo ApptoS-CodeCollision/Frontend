@@ -1,5 +1,7 @@
 import { Heart } from "lucide-react";
 import { useLikeHandler } from "@/utils/hooks/useLikeHandler";
+import logoImg from "@/assets/taillogo.png";
+import Image from "next/image";
 
 interface CardProps {
   ai_id: string;
@@ -20,7 +22,13 @@ const Card: React.FC<CardProps> = ({
 
   return (
     <div className="p-4 bg-[#1F222A] rounded-[16px] shadow-md relative flex flex-col">
-      <div className="bg-primary-900 rounded-[16px] size-14 mb-4"></div>
+      <div className="w-16 mb-4">
+        <Image
+          src={logoImg}
+          alt="Default Logo"
+          className="object-contain transform translate-x"
+        />
+      </div>
       <div className="flex-grow flex flex-col">
         <h3 className="text-sm font-semibold mb-2">{name}</h3>
         <p className="text-xs text-gray-500">{category}</p>

@@ -38,7 +38,7 @@ export default function Landing() {
         <Link
           href="https://apptosblockblock.gitbook.io/apptos"
           target="_blank"
-          className="w-full mb-24 bg-primary-900 text-white font-semibold py-4 rounded-full shadow-md hover:bg-primary-100 transition duration-300 ease-in-out flex items-center justify-center"
+          className="w-full mb-6 bg-primary-900 text-white font-semibold py-4 rounded-full shadow-md hover:bg-primary-100 transition duration-300 ease-in-out flex items-center justify-center"
         >
           About Us
         </Link>
