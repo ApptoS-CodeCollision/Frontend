@@ -133,7 +133,7 @@ const AIChat = () => {
 
   return (
     <div className="flex flex-col h-full text-white ">
-      <div className="flex-grow overflow-y-auto space-y-4 pb-32 scrollbar-hide">
+      <div className="flex-grow overflow-y-auto space-y-4 pb-36 scrollbar-hide">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -160,6 +160,7 @@ const AIChat = () => {
                 borderBottomLeftRadius: "20px",
                 borderBottomRightRadius:
                   message.role === "user" ? "8px" : "20px",
+                wordBreak: "break-word",
               }}
             >
               {message.content}
