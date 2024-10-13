@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { ChevronRight } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
-import { AICardProps, CardData } from "@/utils/interface";
+import { AICardProps } from "@/utils/interface";
 import AIDetailsPopup from "../explore/AIDetailsPopup";
 import logoImg from "@/assets/taillogo.png";
 
@@ -13,11 +13,18 @@ export const AICard = ({ item }: AICardProps) => {
     router.push(`/ai/${item.id}/chat`);
   };
 
+  const handleDialogTriggerClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 클릭 이벤트가 상위로 전파되지 않도록 막음
+  };
+
   return (
     <div className="flex items-center justify-between px-2 py-3 border-b border-gray-700 w-full">
       <Dialog>
         <DialogTrigger asChild>
-          <div className="flex items-center cursor-pointer flex-grow min-w-0 mr-4">
+          <div
+            className="flex items-center cursor-pointer flex-grow min-w-0 mr-4"
+            onClick={handleDialogTriggerClick} // 클릭 이벤트 전파 방지
+          >
             <div className="flex-shrink-0 mr-4">
               {item.profile_image_url ? (
                 <Image
@@ -44,7 +51,10 @@ export const AICard = ({ item }: AICardProps) => {
           </div>
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-[425px] rounded-3xl p-6 max-h-[80vh] overflow-y-auto">
+        <DialogContent
+          onClick={(e) => e.stopPropagation()} // 클릭 이벤트 전파 방지
+          className="sm:max-w-[425px] rounded-3xl p-6 max-h-[80vh] overflow-y-auto"
+        >
           <AIDetailsPopup ai_detail={item} />
         </DialogContent>
       </Dialog>
