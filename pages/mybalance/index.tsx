@@ -91,7 +91,7 @@ const MyBalancePage = () => {
     aiWithEarnings?.reduce((sum, ai) => sum + ai.earnings, 0) || 0;
 
   return (
-    <div className="">
+    <div className="pb-16">
       <BalanceOverview
         totalBalance={balance}
         totalEarnings={totalEarnings}
