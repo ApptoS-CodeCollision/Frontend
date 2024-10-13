@@ -5,23 +5,24 @@ import AIDetailsPopup from "./AIDetailsPopup";
 import { CardData } from "@/utils/interface";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import useSWR from 'swr';
-import { AI_API, fetchers } from "@/utils/api/ai";
+import { AI_API} from "@/utils/api/ai";
+import { fetchers } from "@/utils/api/fetch";
 import { useUserStore } from "@/store/userStore";
 
 interface TrendSectionProps {
   title: string;
   selectedCategory: string;
-  refreshData: () => void;
+  // refreshData: () => void;
 }
 
 const TrendSection: React.FC<TrendSectionProps> = ({
   title,
   selectedCategory,
-  refreshData,
+  // refreshData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUserStore();
-  const { data : trendData, error, isLoading } = useSWR(`${AI_API.TREND(user?.user_address!, selectedCategory)}?offset=${0}&limit=${10}`, fetchers);
+  const { data : trendData, error, isLoading } = useSWR(`${AI_API.GET_TREND_AIS(user?.user_address!, selectedCategory)}?offset=${0}&limit=${10}`, fetchers);
   
   if (error) return <div>Failed to load</div>
   if (isLoading) return <div>Loading...</div>
@@ -44,7 +45,7 @@ const TrendSection: React.FC<TrendSectionProps> = ({
                     name={item.name}
                     category={item.category}
                     like={item.like}
-                    refreshData={refreshData}
+                    // refreshData={refreshData}
                   />
                 </div>
               </DialogTrigger>

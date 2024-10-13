@@ -5,7 +5,8 @@ async function apiRequest(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<any> {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+  // const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+  const response = await fetch(`${endpoint}`, options);
   if (!response.ok) {
     const errorData = await response.text();
     console.error(
@@ -21,25 +22,19 @@ async function apiRequest(
 
 // API URL 상수화
 export const AI_API = {
-  TREND: (address: string, category: string) =>
-    `${API_BASE_URL}/ais/trend/${address}/${category}`,
-  LIST: "/ais/",
-  TODAY: (address: string) => `/ais/today/${address}`,
-  DETAILS: (id: string) => `/ais/id/${id}`,
-  SEARCH: (name: string, address: string) => `/ais/search/${name}/${address}`,
-  LOGS: (id: string) => `/ailogs/ai/${id}`,
-  USER: (userid: string) => `/ais/user/${userid}`,
-  DELETE: (id: string) => `/ai/${id}`,
+  GET_AI_LIST: () => `${API_BASE_URL}/ais/`,
+  GET_TREND_AIS: (address: string, category: string) => `${API_BASE_URL}/ais/trend/${address}/${category}`,
+  GET_TODAY_AIS: (address: string) => `${API_BASE_URL}/ais/today/${address}`,
+  GET_SEARCHED_AIS: (name: string, address: string) => `${API_BASE_URL}/ais/search/${name}/${address}`,
+
+  GET_AIS_BY_USER: (userid: string) => `${API_BASE_URL}/ais/user/${userid}`,
+  GET_AI_DETAIL_BY_ID: (id: string) => `${API_BASE_URL}/ais/id/${id}`,
+  GET_AI_LOGS: (id: string) => `${API_BASE_URL}/ailogs/ai/${id}`,
+
+  DELETE_AI: (id: string) => `${API_BASE_URL}/ai/${id}`,
 };
 
 // API 요청 함수들
-export async function fetchers(url: string): Promise<any> {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
 
 export async function fetchTrendingAIs(
   category: string,
@@ -47,7 +42,7 @@ export async function fetchTrendingAIs(
   query: { offset?: number; limit?: number } = {}
 ) {
   const { offset = 0, limit = 10 } = query;
-  const endpoint = `${AI_API.TREND(
+  const endpoint = `${AI_API.GET_TREND_AIS(
     address,
     category
   )}?offset=${offset}&limit=${limit}`;
@@ -55,20 +50,20 @@ export async function fetchTrendingAIs(
 }
 
 export async function fetchAIs(offset: number, limit: number) {
-  return await apiRequest(`${AI_API.LIST}?offset=${offset}&limit=${limit}`);
+  return await apiRequest(`${AI_API.GET_AI_LIST}?offset=${offset}&limit=${limit}`);
 }
 
 export async function fetchTodayAIs(address: string) {
-  return await apiRequest(AI_API.TODAY(address));
+  return await apiRequest(AI_API.GET_TODAY_AIS(address));
 }
 
 export async function fetchAIDetails(id: string) {
-  return await apiRequest(AI_API.DETAILS(id));
+  return await apiRequest(AI_API.GET_AI_DETAIL_BY_ID(id));
 }
 
 export async function fetchSearchAIs(name: string, address: string) {
   try {
-    return await apiRequest(AI_API.SEARCH(name, address));
+    return await apiRequest(AI_API.GET_SEARCHED_AIS(name, address));
   } catch (error: any) {
     if (error.message.includes("404")) {
       throw new Error("No results found");
@@ -78,7 +73,7 @@ export async function fetchSearchAIs(name: string, address: string) {
 }
 
 export async function fetchAILogs(id: string) {
-  return await apiRequest(AI_API.LOGS(id));
+  return await apiRequest(AI_API.GET_AI_LOGS(id));
 }
 
 export async function createAI(aiData: {
@@ -94,7 +89,7 @@ export async function createAI(aiData: {
   tx_hash: string;
 }) {
   console.log(aiData.rag_comments);
-  return await apiRequest(AI_API.LIST, {
+  return await apiRequest(AI_API.GET_AI_LIST(), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(aiData),
@@ -102,11 +97,11 @@ export async function createAI(aiData: {
 }
 
 export async function fetchMyAIs(userid: string) {
-  return await apiRequest(AI_API.USER(userid));
+  return await apiRequest(AI_API.GET_AIS_BY_USER(userid));
 }
 
 export async function deleteAI(id: string) {
-  return await apiRequest(AI_API.DELETE(id), { method: "DELETE" });
+  return await apiRequest(AI_API.DELETE_AI(id), { method: "DELETE" });
 }
 
 export async function updateAI(aiData: {
@@ -121,7 +116,7 @@ export async function updateAI(aiData: {
   created_at: string;
   tx_hash: string;
 }) {
-  return await apiRequest(AI_API.LIST, {
+  return await apiRequest(AI_API.GET_AI_LIST(), {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(aiData),
