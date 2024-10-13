@@ -29,6 +29,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
   const [gender, setGender] = useState<string>(user ? user?.gender! : "");
   const [country, setCountry] = useState<string>(user ? user.country! : "");
   const [interest, setInterest] = useState<string>(user ? user?.interest! : "");
+  const [profileImage, setProfileImage] = useState<string>(user ? user?.profile_image_url! : "");
 
   const [error, setError] = useState("");
 
@@ -99,10 +100,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
       const userData: User = {
         user_address: account?.address!,
         nickname: nickname, // Add nickname if needed
-        profile_image_url: profileImages[selectedProfileIndex],
         gender: gender,
         country: country,
         interest: interest,
+        profile_image_url: profileImage,
       };
 
       switch (mode) {
@@ -125,7 +126,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
       
       {ProfileImage(selectedProfileIndex)}
 
-      {ProfileSelectionSection(selectedProfileIndex, setSelectedProfileIndex)}
+      {ProfileSelectionSection(selectedProfileIndex, setSelectedProfileIndex, setProfileImage)}
 
       {NicknameSection(nickname, setNickname)}
 
@@ -170,14 +171,17 @@ const ProfileImage = (selectedProfileIndex: number) => {
   )
 }
 
-const ProfileSelectionSection = (selectedProfileIndex: number, setSelectedProfileIndex: any) => {
+const ProfileSelectionSection = (selectedProfileIndex: number, setSelectedProfileIndex: any, setProfileImage: any) => {
   return(
     <div className="flex justify-center space-x-4 mb-8">
       {profileImages.map((img, index) => (
         <button
           type="button"
           key={index}
-          onClick={() => setSelectedProfileIndex(index + 1)}
+          onClick={() => {
+            setSelectedProfileIndex(index + 1);
+            setProfileImage(profileImages[index]);
+          } }
           className={`size-16 rounded-full overflow-hidden border-2 bg-[#2A2D36] ${
             selectedProfileIndex === index + 1
               ? "border-primary-900"
