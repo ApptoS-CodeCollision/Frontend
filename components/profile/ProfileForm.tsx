@@ -21,6 +21,7 @@ const profileImages = [
 ];
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
+  const { account } = useWallet();
   const [selectedProfileIndex, setSelectedProfileIndex] = useState(0);
 
   const { user, setUser } = useUserStore();
@@ -33,7 +34,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { account } = useWallet();
   const { executeTransaction } = useAptosCall();
 
   useEffect(() => {
