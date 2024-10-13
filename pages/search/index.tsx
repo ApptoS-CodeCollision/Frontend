@@ -21,8 +21,10 @@ export default function SearchPage() {
   useEffect(() => {
     loadAIModels();
   }, [searchQuery]);
+
   const sortedCards = (cards: CardData[] | null) => {
     if (!cards) return [];
+    console.log(cards);
     return [...cards].sort((a, b) => {
       if (sortBy === "latest") {
         return (
@@ -35,12 +37,13 @@ export default function SearchPage() {
   };
 
   const handleSort = (option: "latest" | "popular") => {
+    console.log(option);
     setSortBy(option);
     setShowSortOptions(false);
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pb-20">
       <div className="mt-2 mb-4">
         <Search setSearch={setSearchQuery} />
       </div>
