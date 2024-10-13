@@ -4,6 +4,7 @@ import { useLikeHandler } from "@/utils/hooks/useLikeHandler";
 import Image from "next/image";
 import { Heart, Clock, LucideIcon } from "lucide-react";
 import { useState } from "react";
+import logoImg from "@/assets/taillogo.png";
 
 interface AICardPropsWithIcon {
   item: CardData; // CardData 타입으로 변경
@@ -35,7 +36,14 @@ const AICard: React.FC<AICardPropsWithIcon> = ({ item, icon: Icon }) => {
             className="rounded-full"
           />
         ) : (
-          <div className="w-[50px] h-[50px] rounded-full bg-primary-900 flex items-center justify-center"></div>
+          <div className="w-[50px] h-[50px] flex items-center justify-center">
+            <Image
+              src={logoImg}
+              alt="Default Logo"
+              className="object-contain"
+
+            />
+          </div>
         )}
       </div>
       <div className="flex-grow min-w-0 mr-2">
