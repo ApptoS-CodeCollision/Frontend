@@ -35,28 +35,28 @@ const USER_API = {
 };
 
 // 사용자 추가
-export async function registerUser(userData: {
-  user_address: string;
-  nickname: string;
-  profile_image_url?: string;
-  gender?: string;
-  country?: string;
-  interest?: string;
-}) {
-  return await apiRequest(USER_API.ADD, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      user_address: userData.user_address,
-      nickname: userData.nickname,
-      profile_image_url: userData.profile_image_url || "",
-      gender: userData.gender || "",
-      country: userData.country || "",
-      interest: userData.interest || "",
-      trial: 10,
-    }),
-  });
-}
+// export async function registerUser(userData: {
+//   user_address: string;
+//   nickname: string;
+//   profile_image_url?: string;
+//   gender?: string;
+//   country?: string;
+//   interest?: string;
+// }) {
+//   return await apiRequest(USER_API.ADD, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({
+//       user_address: userData.user_address,
+//       nickname: userData.nickname,
+//       profile_image_url: userData.profile_image_url || "",
+//       gender: userData.gender || "",
+//       country: userData.country || "",
+//       interest: userData.interest || "",
+//       trial: 10,
+//     }),
+//   });
+// }
 
 // 사용자 존재 여부 확인
 export async function fetchUserExists(user_address: string) {

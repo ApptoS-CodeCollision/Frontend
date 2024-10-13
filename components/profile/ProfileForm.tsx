@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useUserStore } from "@/store/userStore";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useAptosCall } from "@/utils/hooks/useAptos";
-import { registerUser, updateUser } from "@/utils/api/user";
+// import { registerUser, updateUser } from "@/utils/api/user";
 import { User } from "@/utils/interface";
 
 interface ProfileFormProps {
@@ -49,8 +49,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
     try {
       const res = await executeTransaction("register_user", []);
       if (res) {
-        const result = await registerUser(userData);
-        setUser(result);
+        setUser(userData);
         router.push("/explore");
       } else {
         window.alert("Fail to Register User");
@@ -62,9 +61,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
 
   const updateUserProfile = async (userData : User) => {
     try {
-      const result = await updateUser(userData);
-      setUser(result);
-      router.push("/mypage");
+      const res = await executeTransaction("update_user", []);
+      if (res) {
+        setUser(userData);
+        router.push("/mypage");
+      } else {
+        window.alert("Fail to Update User");
+      }
     } catch (error) {
       throw error;
     }
