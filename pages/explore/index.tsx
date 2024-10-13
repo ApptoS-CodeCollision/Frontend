@@ -19,7 +19,7 @@ export default function ExplorePage() {
   const { todayCards, trendCards, isLoading, loadAIModels } = useLoadAIModels(
     "explore",
     user?.user_address,
-    selectedCategory // 카테고리 적용
+    selectedCategory, // 카테고리 적용
   );
 
   useEffect(() => {
@@ -39,12 +39,14 @@ export default function ExplorePage() {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
-      <TodaySection
-        isLoading={isLoading}
-        todayCards={todayCards}
-        setSelectedAI={setSelectedAI}
-        refreshData={loadAIModels}
-      />
+      {selectedCategory === "all" && (
+        <TodaySection
+          isLoading={isLoading}
+          todayCards={todayCards}
+          setSelectedAI={setSelectedAI}
+          refreshData={loadAIModels}
+        />
+      )}
       <RecentSection
         title={selectedCategory === "all" ? "Weekly Trends" : selectedCategory}
         trendCards={trendCards}
