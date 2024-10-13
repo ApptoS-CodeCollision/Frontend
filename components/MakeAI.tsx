@@ -81,21 +81,24 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
             ai_id ,
             aiData.rag_contents,
           ]);
+          console.log("res1",res)
           return res;
         } else {
           const res: any = await executeTransaction("register_ai", [
             ai_id ,
             aiData.rag_contents,
           ]);
+          console.log("res1",res)
           return res;
         }
       })()
 
-      if (await res) {
+      const result = await res
+      if (result) {
         const createData = {
           ...aiData,
           rag_comments: "Create AI",
-          tx_hash: res.hash,
+          tx_hash: result.hash,
         };
         await handleCreate(createData);
         setLoading(false);

@@ -58,7 +58,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
         }
       })();
 
-      if (await res) {
+      const result = await res
+      if (result) {
         const userExists = await fetchUserExists(userData.user_address);
         if (userExists) {
           const result = await updateUser(userData);
