@@ -9,6 +9,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useAptosCall } from "@/utils/hooks/useAptos";
 // import { registerUser, updateUser } from "@/utils/api/user";
 import { User } from "@/utils/interface";
+import { fetchUserExists, registerUser, updateUser } from "@/utils/api/user";
 
 interface ProfileFormProps {
   mode: "setMode" | "editMode";
@@ -35,7 +36,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { executeTransaction } = useAptosCall();
+  const { executeTransaction , viewTransaction} = useAptosCall();
 
   useEffect(() => {
     if (user?.profile_image_url) {
@@ -48,6 +49,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
 
   const registerUserProfile = async (userData: User) => {
     try {
+      const userExistsInDB = await fetchUserExists(userData.user_address);
+      if (userExistsInDB) {
+        updateUser(userData);
+      } else {
+        registerUser(userData);
+      }
       const res = await executeTransaction("register_user", [
         userData.nickname,
         userData.gender,
