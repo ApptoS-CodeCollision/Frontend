@@ -1,5 +1,5 @@
-import React from 'react';
-import TrialSVG from '@/assets/trial.svg';
+import React from "react";
+import TrialSVG from "@/assets/trial.svg";
 
 interface ModalProps {
   isOpen: boolean;
@@ -9,7 +9,13 @@ interface ModalProps {
   onConfirm?: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, message, onConfirm }) => {
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  message,
+  onConfirm,
+}) => {
   if (!isOpen) return null;
 
   return (
