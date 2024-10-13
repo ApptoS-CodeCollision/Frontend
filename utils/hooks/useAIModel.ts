@@ -33,7 +33,7 @@ export const useAIModel = (aiId?: string) => {
           rag_comments: fetchedAIData.rag_comments,
           profile_image_url: fetchedAIData.profile_image_url,
           examples: fetchedAIData.examples,
-          created_at: fetchedAIData.created_at || new Date().toISOString(),
+          created_at: fetchedAIData.created_at,
         });
       } catch (err) {
         setError("Failed to load AI data.");
@@ -53,7 +53,7 @@ export const useAIModel = (aiId?: string) => {
     const newAI = {
       ...formData,
       creator_address: user.user_address,
-      created_at: new Date().toISOString(),
+      created_at: '2024-10-13 10:00:00.000',
     };
 
     try {

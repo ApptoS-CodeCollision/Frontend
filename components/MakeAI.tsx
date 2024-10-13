@@ -33,7 +33,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
 
@@ -86,13 +86,13 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
         };
         await handleCreate(createData);
         setLoading(false);
-        onAICreated(); // Trigger parent callback after AI is created
-        setOpen(false); // Close the sheet
+        onAICreated(); // AI 생성 후 부모 컴포넌트 콜백 호출
+        setOpen(false); // 시트 닫기
       } else {
         window.alert("Fail to Create AI");
         setLoading(false);
-        onAICreated(); // Trigger parent callback after AI is created
-        setOpen(false); // Close the sheet
+        onAICreated(); // 실패해도 부모 콜백 호출
+        setOpen(false); // 시트 닫기
       }
     }
   };

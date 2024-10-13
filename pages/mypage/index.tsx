@@ -40,7 +40,7 @@ const MyPage = () => {
   }
 
   return (
-    <div className="flex flex-col px-2">
+    <div className="flex flex-col px-2 pb-16">
       <div className="flex items-center justify-between pt-2 pb-4">
         <div className="flex items-center">
           <div className="size-20 bg-gray-500 rounded-full mr-4 mx-auto flex items-center justify-center overflow-hidden">
