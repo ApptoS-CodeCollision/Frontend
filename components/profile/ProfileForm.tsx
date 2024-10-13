@@ -47,7 +47,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
 
   const registerUserProfile = async (userData: User) => {
     try {
-      const res = await executeTransaction("register_user", []);
+      const res = await executeTransaction("register_user", [
+        userData.nickname,
+        userData.gender,
+        userData.country,
+        userData.interest,
+        userData.profile_image_url
+      ]);
       if (res) {
         setUser(userData);
         router.push("/explore");
@@ -61,7 +67,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
 
   const updateUserProfile = async (userData : User) => {
     try {
-      const res = await executeTransaction("update_user", []);
+      const res = await executeTransaction("update_user", [
+        userData.nickname,
+        userData.gender,
+        userData.country,
+        userData.interest,
+        userData.profile_image_url
+      ]);
       if (res) {
         setUser(userData);
         router.push("/mypage");
