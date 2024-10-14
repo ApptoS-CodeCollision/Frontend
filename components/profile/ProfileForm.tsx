@@ -20,7 +20,7 @@ const profileImages = [
   "https://apptos.s3.ap-southeast-2.amazonaws.com/3.png",
 ];
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({ mode }) => {
   const { account } = useWallet();
   const [selectedProfileIndex, setSelectedProfileIndex] = useState(0);
 
@@ -39,7 +39,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
   useEffect(() => {
     if (user?.profile_image_url) {
       const index = profileImages.findIndex(
-        (img) => img === user.profile_image_url,
+        (img) => img === user.profile_image_url
       );
       setSelectedProfileIndex(index !== -1 ? index + 1 : 0);
     }
@@ -47,7 +47,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
 
   const registerUserProfile = async (userData: User) => {
     try {
-      const res = await executeTransaction("register_user", []);
+      const res = await executeTransaction("register_user", [
+        userData.nickname,
+        userData.gender,
+        userData.country,
+        userData.interest,
+        userData.profile_image_url,
+      ]);
       if (res) {
         const result = await registerUser(userData);
         setUser(result);
@@ -60,7 +66,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
     }
   };
 
-  const updateUserProfile = async (userData : User) => {
+  const updateUserProfile = async (userData: User) => {
     try {
       const result = await updateUser(userData);
       setUser(result);
@@ -98,7 +104,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
           await updateUserProfile(userData);
           break;
       }
-
     } catch (err) {
       setError("Failed to submit. Please try again.");
     }
@@ -107,7 +112,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      
       {ProfileImage(selectedProfileIndex)}
 
       {ProfileSelectionSection(selectedProfileIndex, setSelectedProfileIndex)}
@@ -128,7 +132,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode, }) => {
           disabled={isLoading}
           className="w-full bg-primary-900 text-white py-4 rounded-full font-medium disabled:bg-gray-600"
         >
-          {isLoading ? "Loading..." : mode === "setMode" ? "Create Account" : "Update Profile"}
+          {isLoading
+            ? "Loading..."
+            : mode === "setMode"
+            ? "Create Account"
+            : "Update Profile"}
         </button>
       </div>
     </form>
@@ -152,11 +160,14 @@ const ProfileImage = (selectedProfileIndex: number) => {
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-const ProfileSelectionSection = (selectedProfileIndex: number, setSelectedProfileIndex: any) => {
-  return(
+const ProfileSelectionSection = (
+  selectedProfileIndex: number,
+  setSelectedProfileIndex: any
+) => {
+  return (
     <div className="flex justify-center space-x-4 mb-8">
       {profileImages.map((img, index) => (
         <button
@@ -179,11 +190,11 @@ const ProfileSelectionSection = (selectedProfileIndex: number, setSelectedProfil
         </button>
       ))}
     </div>
-  )
-}
+  );
+};
 
 const NicknameSection = (nickname: string, setNickname: any) => {
-  return(
+  return (
     <div>
       <label
         htmlFor="nickname"
@@ -201,8 +212,8 @@ const NicknameSection = (nickname: string, setNickname: any) => {
         required
       />
     </div>
-  )
-}
+  );
+};
 
 const InteresetSection = (interest: string, setInterest: any) => {
   return (
@@ -224,5 +235,5 @@ const InteresetSection = (interest: string, setInterest: any) => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

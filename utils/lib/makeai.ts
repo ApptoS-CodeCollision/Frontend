@@ -3,5 +3,5 @@ export const sanitizeAIName = (value: string): string => {
 };
 
 export const limitContentLength = (value: string): string => {
-  return value.slice(0, 400);
+  return value.slice(0, 1000);
 };
