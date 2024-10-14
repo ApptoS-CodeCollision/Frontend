@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useUserStore } from "@/store/userStore";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useAptosCall } from "@/utils/hooks/useAptos";
-import { registerUser, updateUser } from "@/utils/api/user";
+import { fetchUserExists, registerUser, updateUser } from "@/utils/api/user";
 import { User } from "@/utils/interface";
 
 interface ProfileFormProps {
@@ -34,7 +34,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { executeTransaction } = useAptosCall();
+  const { executeTransaction, viewTransaction } = useAptosCall();
 
   useEffect(() => {
     if (user?.profile_image_url) {
@@ -47,16 +47,26 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode }) => {
 
   const registerUserProfile = async (userData: User) => {
     try {
-      const res = await executeTransaction("register_user", [
-        userData.nickname,
-        userData.gender,
-        userData.country,
-        userData.interest,
-        userData.profile_image_url,
-      ]);
-      if (res) {
-        const result = await registerUser(userData);
-        setUser(result);
+      const isUserExistInBlockchain = await viewTransaction("exists_creator_at", [userData.user_address])
+      const res = (async() => {
+        if (isUserExistInBlockchain) {
+          const res = await executeTransaction("reset_user", []);
+          return res
+        } else {
+          const res = await executeTransaction("register_user", []);
+          return res
+        }
+      })();
+
+      const result = await res
+      if (result) {
+        const userExists = await fetchUserExists(userData.user_address);
+        if (userExists) {
+          const result = await updateUser(userData);
+        } else {
+          const result = await registerUser(userData);
+        }
+        setUser(userData);
         router.push("/explore");
       } else {
         window.alert("Fail to Register User");
@@ -69,7 +79,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode }) => {
   const updateUserProfile = async (userData: User) => {
     try {
       const result = await updateUser(userData);
-      setUser(result);
+      setUser(userData);
       router.push("/mypage");
     } catch (error) {
       throw error;
