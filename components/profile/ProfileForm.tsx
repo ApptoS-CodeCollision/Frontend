@@ -22,28 +22,19 @@ const profileImages = [
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ mode }) => {
   const { account } = useWallet();
-  const [selectedProfileIndex, setSelectedProfileIndex] = useState(0);
 
   const { user, setUser } = useUserStore();
   const [nickname, setNickname] = useState<string>(user ? user?.nickname : "");
   const [gender, setGender] = useState<string>(user ? user?.gender! : "");
   const [country, setCountry] = useState<string>(user ? user.country! : "");
   const [interest, setInterest] = useState<string>(user ? user?.interest! : "");
+  const [profileImageUrl, setProfileImageUrl] = useState<string>(user ? user?.profile_image_url! : "");
 
   const [error, setError] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { executeTransaction, viewTransaction } = useAptosCall();
-
-  useEffect(() => {
-    if (user?.profile_image_url) {
-      const index = profileImages.findIndex(
-        (img) => img === user.profile_image_url
-      );
-      setSelectedProfileIndex(index !== -1 ? index + 1 : 0);
-    }
-  }, [user?.profile_image_url]);
 
   const registerUserProfile = async (userData: User) => {
     try {
@@ -100,7 +91,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode }) => {
       const userData: User = {
         user_address: account?.address!,
         nickname: nickname, // Add nickname if needed
-        profile_image_url: profileImages[selectedProfileIndex],
+        profile_image_url: profileImageUrl,
         gender: gender,
         country: country,
         interest: interest,
@@ -122,9 +113,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {ProfileImage(selectedProfileIndex)}
+      
+      {ProfileImage(profileImageUrl)}
 
-      {ProfileSelectionSection(selectedProfileIndex, setSelectedProfileIndex)}
+      {ProfileSelectionSection(profileImages, profileImageUrl, setProfileImageUrl)}
 
       {NicknameSection(nickname, setNickname)}
 
@@ -155,14 +147,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ mode }) => {
 
 export default ProfileForm;
 
-const ProfileImage = (selectedProfileIndex: number) => {
+const ProfileImage = (profileImageUrl: string) => {
   return (
     <div className="size-32 bg-[#2A2D36] rounded-full mb-4 mx-auto flex items-center justify-center overflow-hidden">
-      {selectedProfileIndex === 0 ? (
+      {profileImageUrl === "" ? (
         <UserRound className="text-gray-400 size-24" />
       ) : (
         <Image
-          src={profileImages[selectedProfileIndex - 1]}
+          src={profileImageUrl}
           alt="Selected profile"
           width={128}
           height={128}
@@ -173,19 +165,16 @@ const ProfileImage = (selectedProfileIndex: number) => {
   );
 };
 
-const ProfileSelectionSection = (
-  selectedProfileIndex: number,
-  setSelectedProfileIndex: any
-) => {
-  return (
+const ProfileSelectionSection = ( profileImages: any, profileImageUrl: string, setProfileImageUrl: any) => {
+  return(
     <div className="flex justify-center space-x-4 mb-8">
-      {profileImages.map((img, index) => (
+      {profileImages.map((img: any, index: any) => (
         <button
           type="button"
           key={index}
-          onClick={() => setSelectedProfileIndex(index + 1)}
+          onClick={() => setProfileImageUrl(profileImages[index])}
           className={`size-16 rounded-full overflow-hidden border-2 bg-[#2A2D36] ${
-            selectedProfileIndex === index + 1
+            profileImageUrl === profileImages[index]
               ? "border-primary-900"
               : "border-transparent"
           }`}
