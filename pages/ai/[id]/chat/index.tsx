@@ -98,14 +98,12 @@ const AIChat = () => {
   const handleSendMessage = async () => {
     if (!input.trim() || !user?.user_address || !chatId) return;
     if (trial === 0 && balance <= 10000) {
-      setTimeout(() => {
-        setModalContent({
-          title: "Your balance is insufficient",
-          message:
-            "You don't have enough Balance. \nPlease Charge or Request Faucet.",
-        });
-        setIsModalOpen(true);
-      }, 3000);
+      setModalContent({
+        title: "Your balance is insufficient",
+        message:
+          "You don't have enough Balance. \nPlease Charge or Request Faucet.",
+      });
+      setIsModalOpen(true);
       return;
     }
 

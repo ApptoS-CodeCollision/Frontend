@@ -1,36 +1,41 @@
 import { useEffect, useState } from "react";
-import { fetchTodayAIs, fetchTrendingAIs } from "@/utils/api/ai";
-import { CardData } from "@/utils/interface";
 import CategorySelector, {
   CategoryKey,
   categories,
 } from "@/components/explore/CategorySelector";
 import TodaySection from "@/components/explore/TodaySection";
-import RecentSection from "@/components/explore/RecentSection";
+import TrendSection from "@/components/explore/TrendSection";
+import { addLike, delLike } from "@/utils/api/user";
 import { useUserStore } from "@/store/userStore";
-import { useLoadAIModels } from "@/utils/hooks/useLoadAIModels";
+import { fetcher } from "@/utils/api/fetch";
+import { LIKE_API } from "@/utils/api/like";
 
 export default function ExplorePage() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("all");
-  const [selectedAI, setSelectedAI] = useState<CardData | null>(null);
-  const { user } = useUserStore();
 
-  // 'explore' 모드로 설정하여 데이터 로드
-  const { todayCards, trendCards, isLoading, loadAIModels } = useLoadAIModels(
-    "explore",
-    user?.user_address,
-    selectedCategory, // 카테고리 적용
-  );
+  const toggleLike = async (user_address: string, ai_id: string, like: boolean, mutate: any) => {
+    const newLike = !like;
 
-  useEffect(() => {
-    if (user?.user_address) {
-      loadAIModels(); // 페이지 처음 로드될 때도 호출되도록 설정
+    // Optimistically update the like state using SWR's mutate
+    mutate(newLike, false);
+    const userData = {user_address : user_address, ai_id : ai_id}
+
+    try {
+      if (like) {
+        await delLike(userData)
+      } else {
+        await addLike(userData)
+      }
+
+      // 성공적으로 서버에 반영되면 SWR 데이터 갱신
+      mutate(newLike, false);
+    } catch (error) {
+      console.error('Failed to update like status', error);
+      // 실패하면 서버에서 다시 받아 옴
+      const likeFromServer = await fetcher(LIKE_API.AI_LIKE(user_address, ai_id))
+      mutate(likeFromServer, false);
     }
-  }, [user]); // 의존성 배열에 `user` 추가
-
-  useEffect(() => {
-    loadAIModels();
-  }, [selectedCategory]);
+  };
 
   return (
     <div className="p-4 pb-16">
@@ -39,19 +44,16 @@ export default function ExplorePage() {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
-      {selectedCategory === "all" && (
-        <TodaySection
-          isLoading={isLoading}
-          todayCards={todayCards}
-          setSelectedAI={setSelectedAI}
-          refreshData={loadAIModels}
-        />
-      )}
-      <RecentSection
+
+      {selectedCategory === "all" && 
+      <TodaySection 
+      toggleLike={toggleLike}
+      />}
+
+      <TrendSection
         title={selectedCategory === "all" ? "Weekly Trends" : selectedCategory}
-        trendCards={trendCards}
-        setSelectedAI={setSelectedAI}
-        refreshData={loadAIModels}
+        selectedCategory={selectedCategory}
+        toggleLike={toggleLike}
       />
     </div>
   );

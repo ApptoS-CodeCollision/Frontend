@@ -29,7 +29,7 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
   const [nameTooLong, setNameTooLong] = useState(false);
   const { aiData, setAIData, handleCreate } = useAIModel();
   const { user } = useUserStore();
-  const { executeTransaction } = useAptosCall();
+  const { executeTransaction, viewTransaction} = useAptosCall();
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (
@@ -73,16 +73,32 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
   const handleCreateAI = async () => {
     if (isFormValid) {
       setLoading(true);
-      const res: any = await executeTransaction("register_ai", [
-        user?.user_address + "_" + aiData.name,
-        aiData.rag_contents,
-      ]);
+      const ai_id = user?.user_address + "_" + aiData.name
+      const isAIAlreadyRegisterInBlockchain = await viewTransaction("contain_ai", [user?.user_address, ai_id])
+      const res: any = (async ()=>{
+        if (isAIAlreadyRegisterInBlockchain) {
+          const res: any = await executeTransaction("update_ai", [
+            ai_id ,
+            aiData.rag_contents,
+          ]);
+          console.log("res1",res)
+          return res;
+        } else {
+          const res: any = await executeTransaction("register_ai", [
+            ai_id ,
+            aiData.rag_contents,
+          ]);
+          console.log("res1",res)
+          return res;
+        }
+      })()
 
-      if (res) {
+      const result = await res
+      if (result) {
         const createData = {
           ...aiData,
           rag_comments: "Create AI",
-          tx_hash: res.hash,
+          tx_hash: result.hash,
         };
         await handleCreate(createData);
         setLoading(false);
@@ -158,10 +174,10 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
               label="Describe your AI"
               value={aiData.introductions}
               onChange={handleInputChange}
-              placeholder="Provide a brief description"
+              placeholder="Describe your AI in a first person pronoun (e.g. I am an expert on global travel)"
               name="introductions"
               type="textarea"
-              rows={2}
+              rows={3}
             />
             <AIFormField
               label="Data"

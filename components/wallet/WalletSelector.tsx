@@ -39,6 +39,7 @@ import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/router";
 import { fetchUser, fetchUserExists } from "@/utils/api/user";
 import { User } from "@/utils/interface";
+import { useAptosCall } from "@/utils/hooks/useAptos";
 
 export function WalletSelector(walletSortingOptions: WalletSortingOptions) {
   const { account, connected, disconnect, wallet } = useWallet();
@@ -48,6 +49,8 @@ export function WalletSelector(walletSortingOptions: WalletSortingOptions) {
   const router = useRouter();
 
   const closeDialog = useCallback(() => setIsDialogOpen(false), []);
+  const {viewTransaction} = useAptosCall();
+
 
   // const copyAddress = useCallback(async () => {
   //   if (!account?.address) return;
@@ -76,8 +79,9 @@ export function WalletSelector(walletSortingOptions: WalletSortingOptions) {
       const checkAndSetUser = async (address: string) => {
         try {
           const userExists = await fetchUserExists(address);
+          const isUserExistInBlockchain = await viewTransaction("exists_creator_at", [address])
 
-          if (userExists) {
+          if (userExists && isUserExistInBlockchain) {
             const userInfo = await fetchUser(address);
             const requiredProps: (keyof User)[] = [
               "user_address",
@@ -114,7 +118,8 @@ export function WalletSelector(walletSortingOptions: WalletSortingOptions) {
     if (!account?.address) return;
     try {
       const userExists = await fetchUserExists(account.address);
-      if (userExists) {
+      const isUserExistInBlockchain = await viewTransaction("exists_creator_at", [account.address])
+      if (userExists && isUserExistInBlockchain) {
         router.push("/explore");
       } else {
         router.push("/setprofile");
