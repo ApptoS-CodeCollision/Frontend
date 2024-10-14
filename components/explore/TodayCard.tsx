@@ -1,6 +1,5 @@
 import { fetcher } from "@/utils/api/fetch";
 import { LIKE_API } from "@/utils/api/like";
-import { addLike, delLike } from "@/utils/api/user";
 import { CardData } from "@/utils/interface";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
 import { ArrowRight, Heart } from "lucide-react";

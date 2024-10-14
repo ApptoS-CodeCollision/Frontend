@@ -1,22 +1,13 @@
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
-import AIDetailsPopup from "./AIDetailsPopup";
 import { CardData } from "@/utils/interface";
 import { useState, useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Image from "next/image";
-import logoImg from "@/assets/taillogo.png";
-import { Heart, ArrowRight } from "lucide-react";
-import { useRouter } from "next/router";
 import { sliderSettings } from "@/utils/lib/sliderSettings";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import { AI_API } from "@/utils/api/ai";
 import { useUserStore } from "@/store/userStore";
 import useSWR from "swr";
 import { fetcher } from "@/utils/api/fetch";
-import { LIKE_API } from "@/utils/api/like";
-import { addLike, delLike } from "@/utils/api/user";
 import TodayCard from "./TodayCard";
 
 interface TodaySectionProps {
