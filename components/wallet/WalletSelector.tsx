@@ -49,8 +49,7 @@ export function WalletSelector(walletSortingOptions: WalletSortingOptions) {
   const router = useRouter();
 
   const closeDialog = useCallback(() => setIsDialogOpen(false), []);
-  const {viewTransaction} = useAptosCall();
-
+  const { viewTransaction } = useAptosCall();
 
   // const copyAddress = useCallback(async () => {
   //   if (!account?.address) return;
@@ -79,7 +78,10 @@ export function WalletSelector(walletSortingOptions: WalletSortingOptions) {
       const checkAndSetUser = async (address: string) => {
         try {
           const userExists = await fetchUserExists(address);
-          const isUserExistInBlockchain = await viewTransaction("exists_creator_at", [address])
+          const isUserExistInBlockchain = await viewTransaction(
+            "exists_creator_at",
+            [address],
+          );
 
           if (userExists && isUserExistInBlockchain) {
             const userInfo = await fetchUser(address);
@@ -92,12 +94,12 @@ export function WalletSelector(walletSortingOptions: WalletSortingOptions) {
               "interest",
             ];
             const missingProps = requiredProps.filter(
-              (prop) => !(prop in userInfo)
+              (prop) => !(prop in userInfo),
             );
 
             if (missingProps.length > 0) {
               console.warn(
-                `Missing user properties: ${missingProps.join(", ")}`
+                `Missing user properties: ${missingProps.join(", ")}`,
               );
             }
 
@@ -118,7 +120,10 @@ export function WalletSelector(walletSortingOptions: WalletSortingOptions) {
     if (!account?.address) return;
     try {
       const userExists = await fetchUserExists(account.address);
-      const isUserExistInBlockchain = await viewTransaction("exists_creator_at", [account.address])
+      const isUserExistInBlockchain = await viewTransaction(
+        "exists_creator_at",
+        [account.address],
+      );
       if (userExists && isUserExistInBlockchain) {
         router.push("/explore");
       } else {
@@ -236,11 +241,6 @@ function ConnectWalletDialog({
           ))}
           {!!installableWallets.length && (
             <Collapsible className="flex flex-col gap-3">
-              <CollapsibleTrigger asChild>
-                <Button size="sm" variant="ghost" className="gap-2">
-                  More wallets <ChevronDown />
-                </Button>
-              </CollapsibleTrigger>
               <CollapsibleContent className="flex flex-col gap-3">
                 {installableWallets.map((wallet) => (
                   <WalletRow
@@ -294,7 +294,6 @@ function AptosConnectWalletRow({ wallet, onConnect }: WalletRowProps) {
         <Button size="lg" variant="outline" className="w-full gap-4">
           <WalletItem.Icon className="h-5 w-5" />
           <WalletItem.Name className="text-base font-normal" />
-          <span className="text-red-600">(NOT RECOMMENDED)</span>
         </Button>
       </WalletItem.ConnectButton>
     </WalletItem>
