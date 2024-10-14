@@ -174,10 +174,10 @@ const CreateCustomAISheet: React.FC<CreateCustomAISheetProps> = ({
               label="Describe your AI"
               value={aiData.introductions}
               onChange={handleInputChange}
-              placeholder="Provide a brief description"
+              placeholder="Describe your AI in a first person pronoun (e.g. I am an expert on global travel)"
               name="introductions"
               type="textarea"
-              rows={2}
+              rows={3}
             />
             <AIFormField
               label="Data"
