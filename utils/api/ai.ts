@@ -50,20 +50,21 @@ export async function fetchTrendingAIs(
 }
 
 export async function fetchAIs(offset: number, limit: number) {
-  return await apiRequest(`${AI_API.GET_AI_LIST}?offset=${offset}&limit=${limit}`);
+  console.log("error line",`${AI_API.GET_AI_LIST()}?offset=${offset}&limit=${limit}`);
+  return await apiRequest(`${AI_API.GET_AI_LIST()}?offset=${offset}&limit=${limit}`);
 }
 
 export async function fetchTodayAIs(address: string) {
-  return await apiRequest(AI_API.GET_TODAY_AIS(address));
+  return await apiRequest(`${AI_API.GET_TODAY_AIS(address)}`);
 }
 
 export async function fetchAIDetails(id: string) {
-  return await apiRequest(AI_API.GET_AI_DETAIL_BY_ID(id));
+  return await apiRequest(`${AI_API.GET_AI_DETAIL_BY_ID(id)}`);
 }
 
 export async function fetchSearchAIs(name: string, address: string) {
   try {
-    return await apiRequest(AI_API.GET_SEARCHED_AIS(name, address));
+    return await apiRequest(`${AI_API.GET_SEARCHED_AIS(name, address)}`);
   } catch (error: any) {
     if (error.message.includes("404")) {
       throw new Error("No results found");
@@ -89,7 +90,7 @@ export async function createAI(aiData: {
   tx_hash: string;
 }) {
   console.log(aiData.rag_comments);
-  return await apiRequest(AI_API.GET_AI_LIST(), {
+  return await apiRequest(`${AI_API.GET_AI_LIST()}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(aiData),
@@ -97,11 +98,11 @@ export async function createAI(aiData: {
 }
 
 export async function fetchMyAIs(userid: string) {
-  return await apiRequest(AI_API.GET_AIS_BY_USER(userid));
+  return await apiRequest(`${AI_API.GET_AIS_BY_USER(userid)}`);
 }
 
 export async function deleteAI(id: string) {
-  return await apiRequest(AI_API.DELETE_AI(id), { method: "DELETE" });
+  return await apiRequest(`${AI_API.DELETE_AI(id)}`, { method: "DELETE" });
 }
 
 export async function updateAI(aiData: {
@@ -116,7 +117,7 @@ export async function updateAI(aiData: {
   created_at: string;
   tx_hash: string;
 }) {
-  return await apiRequest(AI_API.GET_AI_LIST(), {
+  return await apiRequest(`${AI_API.GET_AI_LIST()}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(aiData),

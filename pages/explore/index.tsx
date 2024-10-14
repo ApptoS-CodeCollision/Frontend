@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CategorySelector, {
   CategoryKey,
   categories,
@@ -6,7 +6,6 @@ import CategorySelector, {
 import TodaySection from "@/components/explore/TodaySection";
 import TrendSection from "@/components/explore/TrendSection";
 import { addLike, delLike } from "@/utils/api/user";
-import { useUserStore } from "@/store/userStore";
 import { fetcher } from "@/utils/api/fetch";
 import { LIKE_API } from "@/utils/api/like";
 
