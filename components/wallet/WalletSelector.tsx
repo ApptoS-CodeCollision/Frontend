@@ -289,7 +289,7 @@ function AptosConnectWalletRow({ wallet, onConnect }: WalletRowProps) {
         <Button size="lg" variant="outline" className="w-full gap-4">
           <WalletItem.Icon className="h-5 w-5" />
           <WalletItem.Name className="text-base font-normal" />
-          <span className="text-red-600">(NOT RECOMMANDED)</span>
+          <span className="text-red-600">(NOT RECOMMENDED)</span>
         </Button>
       </WalletItem.ConnectButton>
     </WalletItem>
