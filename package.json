@@ -33,6 +33,7 @@
     "react-select-country-list": "^2.2.3",
     "react-slick": "^0.30.2",
     "slick-carousel": "^1.8.1",
+    "swr": "^2.2.5",
     "tailwind-merge": "^2.5.2",
     "tailwind-scrollbar-hide": "^1.1.7",
     "tailwindcss-animate": "^1.0.7",
