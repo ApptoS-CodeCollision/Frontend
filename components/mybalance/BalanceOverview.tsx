@@ -38,7 +38,7 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({
   };
 
   return (
-    <div className="bg-primary-900 bg-opacity-[42%] rounded-xl p-4 mb-6 text-center">
+    <div className="bg-primary-900 bg-opacity-[80%] rounded-xl p-4 mb-6 text-center">
       <div className="flex justify-between mb-4">
         <div className="flex-1 pr-2">
           <p className="text-[#B9F0DE] text-sm mb-1">My Balance</p>
