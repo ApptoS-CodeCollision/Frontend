@@ -49,6 +49,7 @@ const TodaySection: React.FC<TodaySectionProps> = ({
         <Slider {...dynamicSliderSettings}>
           {todayData.ais?.map((item: CardData, index: number) => (
             <TodayCard 
+            key={item.aiId}
             item={item}
             index={index}
             user_address={user?.user_address!}
