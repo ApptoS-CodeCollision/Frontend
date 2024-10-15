@@ -58,14 +58,14 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ value, onChange }) => {
     control: (provided) => ({
       ...provided,
       borderRadius: "0",
-      borderWidth: "0 0 1px 0",
-      borderColor: "#4A4D56",
+      border: "none",
+      borderBottom: "1px solid #4A4D56",
       boxShadow: "none",
       backgroundColor: "transparent",
       color: "white",
       padding: "0.5rem 0",
       "&:hover": {
-        borderColor: "#00D897",
+        borderColor: "#4A4D56",
       },
     }),
     singleValue: (provided) => ({
@@ -79,6 +79,16 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ value, onChange }) => {
     placeholder: (provided) => ({
       ...provided,
       color: "#9CA3AF",
+    }),
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      color: "#9ca3af", // Keeps the arrow color white
+      "&:hover": {
+        color: "#9ca3af", // Prevents the arrow color from changing on hover
+      },
+    }),
+    indicatorSeparator: (provided) => ({
+      display: "none",
     }),
   };
 
